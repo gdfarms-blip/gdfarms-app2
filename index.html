@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GDFarms - Pro Profit Tracker</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#16a34a"/>
+    <meta name="description" content="Professional farm profit and loss tracker">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #16a34a;
+            --primary-dark: #15803d;
+            --primary-light: #dcfce7;
+            --secondary: #2563eb;
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --border: #e5e7eb;
+            --text: #4b5563;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #e0f2e1 50%, #dbeafe 100%);
+            overflow: hidden;
+        }
+
+        #app {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #1e3a5f 100%);
+            color: #fff;
+        }
+
+        /* Header */
+        .app-header {
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            padding: 20px 24px;
+            box-shadow: 0 10px 30px rgba(22, 163, 74, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .app-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .app-subtitle {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat-pill {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Sync Status */
+        .sync-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sync-online {
+            color: #10b981;
+        }
+
+        .sync-offline {
+            color: #ef4444;
+        }
+
+        .sync-pending {
+            color: #f59e0b;
+        }
+
+        /* Main Content */
+        .app-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .app-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .app-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .app-content::-webkit-scrollbar-thumb {
+            background: rgba(22, 163, 74, 0.5);
+            border-radius: 4px;
+        }
+
+        /* Landing Page */
+        .landing-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            gap: 20px;
+        }
+
+        .landing-title {
+            font-size: 48px;
+            font-weight: 900;
+            color: white;
+            text-align: center;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        .landing-subtitle {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            margin-bottom: 40px;
+            max-width: 400px;
+        }
+
+        .nav-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .nav-btn {
+            padding: 20px 24px;
+            border: none;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 120px;
+            text-align: center;
+        }
+
+        .nav-btn-icon {
+            font-size: 32px;
+        }
+
+        .nav-btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 10px 30px rgba(22, 163, 74, 0.3);
+        }
+
+        .nav-btn-primary:hover {
+            box-shadow: 0 15px 40px rgba(22, 163, 74, 0.4);
+            transform: translateY(-4px);
+        }
+
+        .nav-btn-secondary {
+            background: linear-gradient(135deg, var(--secondary), #1d4ed8);
+            color: white;
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+        }
+
+        .nav-btn-secondary:hover {
+            box-shadow: 0 15px 40px rgba(37, 99, 235, 0.4);
+            transform: translateY(-4px);
+        }
+
+        .nav-btn-warning {
+            background: linear-gradient(135deg, var(--warning), #d97706);
+            color: white;
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
+        }
+
+        .nav-btn-warning:hover {
+            box-shadow: 0 15px 40px rgba(245, 158, 11, 0.4);
+            transform: translateY(-4px);
+        }
+
+        .nav-btn-danger {
+            background: linear-gradient(135deg, var(--danger), #b91c1c);
+            color: white;
+            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
+        }
+
+        .nav-btn-danger:hover {
+            box-shadow: 0 15px 40px rgba(239, 68, 68, 0.4);
+            transform: translateY(-4px);
+        }
+
+        /* Back Button */
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: fit-content;
+            margin-bottom: 20px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Input Styles */
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 8px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: white;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 10px 25px rgba(22, 163, 74, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #b91c1c);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Grid */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        /* Stat Cards */
+        .stat-card {
+            background: linear-gradient(135deg, rgba(22, 163, 74, 0.1), rgba(21, 128, 61, 0.1));
+            border: 2px solid rgba(22, 163, 74, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        /* Quick Sell Grid */
+        .quick-sell-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 14px;
+            margin-top: 16px;
+        }
+
+        .quick-sell-card {
+            background: linear-gradient(135deg, #f0fdf4, #dbeafe);
+            border-radius: 12px;
+            padding: 16px;
+            border: 2px solid rgba(22, 163, 74, 0.2);
+        }
+
+        .quick-sell-buttons {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .quick-btn {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 8px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: linear-gradient(135deg, #f9fafb, #f3f4f6);
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 800;
+            font-size: 12px;
+            color: var(--dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: linear-gradient(90deg, rgba(22, 163, 74, 0.05), transparent);
+        }
+
+        /* Hide sections */
+        .hidden {
+            display: none;
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            background: var(--success);
+        }
+
+        .toast.error {
+            background: var(--danger);
+        }
+
+        .toast.warning {
+            background: var(--warning);
+        }
+
+        /* Chart container */
+        .chart-container {
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        /* Product Prices */
+        .prices-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .price-card {
+            background: linear-gradient(135deg, #f0fdf4, #dbeafe);
+            border-radius: 12px;
+            padding: 16px;
+            border: 2px solid rgba(22, 163, 74, 0.2);
+        }
+
+        /* Stock Distribution */
+        .stock-distribution {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .stock-card {
+            background: linear-gradient(135deg, #f0fdf4, #dbeafe);
+            border-radius: 12px;
+            padding: 16px;
+            border: 2px solid rgba(22, 163, 74, 0.2);
+            text-align: center;
+        }
+
+        .stock-type {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stock-value {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        /* Projection Cards */
+        .projection-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .projection-card {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-radius: 12px;
+            padding: 16px;
+            border: 2px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .projection-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .projection-value {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--warning);
+            margin-bottom: 4px;
+        }
+
+        .projection-detail {
+            font-size: 12px;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        /* Sync Controls */
+        .sync-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .sync-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .sync-btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .sync-btn-secondary {
+            background: linear-gradient(135deg, var(--secondary), #1d4ed8);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2, .grid-3, .stock-distribution, .projection-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-buttons {
+                grid-template-columns: 1fr;
+                max-width: 100%;
+            }
+
+            .app-title {
+                font-size: 24px;
+            }
+
+            .landing-title {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+
+    <script>
+        // Neon PostgreSQL Configuration
+        const NEON_CONFIG = {
+            // This will be updated to your Railway backend URL after deployment
+            endpoint: '/api/neon', // For local development
+            enabled: true
+        };
+
+        class NeonDB {
+            constructor() {
+                this.endpoint = NEON_CONFIG.endpoint;
+                this.enabled = NEON_CONFIG.enabled;
+            }
+
+            async query(endpoint, data = {}) {
+                if (!this.enabled) {
+                    throw new Error('Neon DB is not enabled');
+                }
+
+                try {
+                    const response = await fetch(this.endpoint + endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    return await response.json();
+                } catch (error) {
+                    console.error('Neon DB query failed:', error);
+                    throw error;
+                }
+            }
+
+            async saveUserData(userId, data) {
+                return await this.query('/user-data', { userId, data });
+            }
+
+            async loadUserData(userId) {
+                return await this.query('/load-user-data', { userId });
+            }
+
+            async deleteUserData(userId) {
+                return await this.query('/delete-user-data', { userId });
+            }
+        }
+
+        class GDFarmsApp {
+            constructor() {
+                this.currentPage = 'home';
+                this.state = {
+                    transportToMarket: 0,
+                    transportFromMarket: 0,
+                    products: [
+                        { id: 1, name: 'Beans', orderPrice: 0, sellingPrice: 0, reserveStock: 0, marketStock: 0 },
+                        { id: 2, name: 'Rice', orderPrice: 0, sellingPrice: 0, reserveStock: 0, marketStock: 0 },
+                        { id: 3, name: 'Popcorn', orderPrice: 0, sellingPrice: 0, reserveStock: 0, marketStock: 0 },
+                    ],
+                    transactions: [],
+                    newProductName: '',
+                    newProductReserveStock: 0,
+                    newProductMarketStock: 0,
+                    entryDate: new Date().toISOString().split('T')[0],
+                    filterDate: '',
+                    filterProduct: '',
+                };
+                
+                this.neonDB = new NeonDB();
+                this.syncStatus = 'offline';
+                this.userId = this.generateUserId();
+                
+                this.initNeon();
+                this.loadData();
+                this.render();
+            }
+
+            generateUserId() {
+                let userId = localStorage.getItem('gdfarms_userId');
+                if (!userId) {
+                    userId = 'user_' + Math.random().toString(36).substr(2, 9);
+                    localStorage.setItem('gdfarms_userId', userId);
+                }
+                return userId;
+            }
+
+            async initNeon() {
+                try {
+                    if (this.neonDB.enabled) {
+                        // Test connection by trying to load data
+                        await this.loadFromNeon();
+                        this.syncStatus = 'online';
+                        console.log('Neon DB connected successfully');
+                        this.showToast('🚀 Neon PostgreSQL connected - Data syncing enabled', 'success');
+                    } else {
+                        this.syncStatus = 'offline';
+                        console.log('Neon DB not available, using local storage only');
+                    }
+                } catch (error) {
+                    console.error('Neon initialization failed:', error);
+                    this.syncStatus = 'offline';
+                    this.showToast('⚠️ Neon connection failed - Using local storage', 'warning');
+                }
+            }
+
+            async syncToNeon() {
+                if (!this.neonDB.enabled) {
+                    this.showToast('Neon DB not available', 'warning');
+                    return;
+                }
+
+                try {
+                    this.syncStatus = 'pending';
+                    this.render();
+                    
+                    await this.neonDB.saveUserData(this.userId, this.state);
+
+                    this.syncStatus = 'online';
+                    this.showToast('✅ Data synced to Neon PostgreSQL', 'success');
+                    this.render();
+                } catch (error) {
+                    console.error('Neon sync failed:', error);
+                    this.syncStatus = 'offline';
+                    this.showToast('❌ Sync failed: ' + error.message, 'error');
+                    this.render();
+                }
+            }
+
+            async loadFromNeon() {
+                if (!this.neonDB.enabled) {
+                    this.showToast('Neon DB not available', 'warning');
+                    return;
+                }
+
+                try {
+                    this.syncStatus = 'pending';
+                    this.render();
+                    
+                    const result = await this.neonDB.loadUserData(this.userId);
+                    
+                    if (result && result.data) {
+                        this.state = { ...this.state, ...result.data };
+                        this.saveData();
+                        this.syncStatus = 'online';
+                        this.showToast('✅ Data loaded from Neon PostgreSQL', 'success');
+                    } else {
+                        this.syncStatus = 'online';
+                        this.showToast('No cloud data found', 'warning');
+                    }
+                    
+                    this.render();
+                } catch (error) {
+                    console.error('Neon load failed:', error);
+                    this.syncStatus = 'offline';
+                    this.showToast('❌ Load failed: ' + error.message, 'error');
+                    this.render();
+                }
+            }
+
+            async clearNeonData() {
+                if (!this.neonDB.enabled) {
+                    this.showToast('Neon DB not available', 'warning');
+                    return;
+                }
+
+                if (!confirm('Are you sure you want to delete ALL your cloud data? This cannot be undone.')) {
+                    return;
+                }
+
+                try {
+                    this.syncStatus = 'pending';
+                    this.render();
+                    
+                    await this.neonDB.deleteUserData(this.userId);
+
+                    this.syncStatus = 'online';
+                    this.showToast('✅ Cloud data cleared successfully', 'success');
+                    this.render();
+                } catch (error) {
+                    console.error('Neon clear failed:', error);
+                    this.syncStatus = 'offline';
+                    this.showToast('❌ Clear failed: ' + error.message, 'error');
+                    this.render();
+                }
+            }
+
+            loadData() {
+                const saved = localStorage.getItem('gdfarms_data');
+                if (saved) {
+                    try {
+                        const data = JSON.parse(saved);
+                        this.state = { ...this.state, ...data };
+                    } catch (e) {
+                        console.error('Error loading data:', e);
+                    }
+                }
+            }
+
+            saveData() {
+                localStorage.setItem('gdfarms_data', JSON.stringify(this.state));
+            }
+
+            setState(updates) {
+                this.state = { ...this.state, ...updates };
+                this.saveData();
+                this.render();
+            }
+
+            navigateTo(page) {
+                this.currentPage = page;
+                this.render();
+            }
+
+            calculateProfit(product, quantity, transportTo, transportFrom) {
+                const totalCost = (product.orderPrice * quantity) + transportTo;
+                const totalRevenue = (product.sellingPrice * quantity) - transportFrom;
+                return totalRevenue - totalCost;
+            }
+
+            calculateProjection(product, quantity) {
+                return this.calculateProfit(product, quantity, this.state.transportToMarket, this.state.transportFromMarket);
+            }
+
+            showToast(message, type = 'success') {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.classList.add('show');
+                }, 100);
+
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        document.body.removeChild(toast);
+                    }, 300);
+                }, 3000);
+            }
+
+            quickSell(productId, quantity) {
+                const selectedProduct = this.state.products.find(p => p.id === productId);
+                if (!selectedProduct) return;
+
+                if (quantity > selectedProduct.marketStock) {
+                    this.showToast(`⚠️ Insufficient market stock! You only have ${selectedProduct.marketStock}kg in market`, 'warning');
+                    return;
+                }
+
+                if (selectedProduct.orderPrice <= 0 || selectedProduct.sellingPrice <= 0) {
+                    this.showToast('⚠️ Please set prices for ' + selectedProduct.name, 'warning');
+                    return;
+                }
+
+                const profit = this.calculateProfit(selectedProduct, quantity, this.state.transportToMarket, this.state.transportFromMarket);
+                const transaction = {
+                    id: Date.now(),
+                    date: new Date().toISOString().split('T')[0],
+                    productId: selectedProduct.id,
+                    productName: selectedProduct.name,
+                    quantity: quantity,
+                    orderPrice: selectedProduct.orderPrice,
+                    sellingPrice: selectedProduct.sellingPrice,
+                    transportToMarket: this.state.transportToMarket,
+                    transportFromMarket: this.state.transportFromMarket,
+                    totalCost: (selectedProduct.orderPrice * quantity) + this.state.transportToMarket,
+                    totalRevenue: (selectedProduct.sellingPrice * quantity) - this.state.transportFromMarket,
+                    profit,
+                };
+
+                const newTransactions = [...this.state.transactions, transaction];
+                const updatedProducts = this.state.products.map(p => 
+                    p.id === productId ? { ...p, marketStock: p.marketStock - quantity } : p
+                );
+
+                this.setState({
+                    transactions: newTransactions,
+                    products: updatedProducts,
+                });
+                this.showToast(`✅ Sold ${quantity}kg of ${selectedProduct.name} - Profit: $${profit.toFixed(2)}`);
+            }
+
+            quickSellCustom(productId) {
+                const input = document.getElementById(`custom-qty-${productId}`);
+                const quantity = parseFloat(input.value);
+
+                if (!quantity || quantity <= 0) {
+                    this.showToast('Enter valid quantity', 'warning');
+                    return;
+                }
+
+                this.quickSell(productId, quantity);
+                input.value = '';
+            }
+
+            addProduct() {
+                if (!this.state.newProductName.trim()) {
+                    this.showToast('Enter product name', 'warning');
+                    return;
+                }
+
+                const reserveStock = parseFloat(this.state.newProductReserveStock) || 0;
+                const marketStock = parseFloat(this.state.newProductMarketStock) || 0;
+
+                if (reserveStock < 0 || marketStock < 0) {
+                    this.showToast('Stock values cannot be negative', 'warning');
+                    return;
+                }
+
+                const newId = Math.max(...this.state.products.map(p => p.id), 0) + 1;
+                const newProducts = [...this.state.products, {
+                    id: newId,
+                    name: this.state.newProductName,
+                    orderPrice: 0,
+                    sellingPrice: 0,
+                    reserveStock: reserveStock,
+                    marketStock: marketStock
+                }];
+                this.setState({ 
+                    products: newProducts, 
+                    newProductName: '',
+                    newProductReserveStock: 0,
+                    newProductMarketStock: 0
+                });
+                this.showToast(`✅ ${this.state.newProductName} added!`);
+            }
+
+            deleteTransaction(id) {
+                const transaction = this.state.transactions.find(t => t.id === id);
+                if (!transaction) return;
+
+                if (!confirm(`Are you sure you want to delete this transaction?`)) {
+                    return;
+                }
+
+                const updatedProducts = this.state.products.map(p =>
+                    p.id === transaction.productId ? { ...p, marketStock: p.marketStock + transaction.quantity } : p
+                );
+
+                const newTransactions = this.state.transactions.filter(t => t.id !== id);
+                this.setState({ 
+                    transactions: newTransactions,
+                    products: updatedProducts
+                });
+                this.showToast('Transaction deleted successfully');
+            }
+
+            updateStock(productId, field, value) {
+                const stockValue = parseFloat(value) || 0;
+                if (stockValue < 0) {
+                    this.showToast('Stock cannot be negative', 'warning');
+                    return;
+                }
+
+                const updatedProducts = this.state.products.map(p =>
+                    p.id === productId ? { ...p, [field]: stockValue } : p
+                );
+                this.setState({ products: updatedProducts });
+            }
+
+            moveStockToMarket(productId, quantity) {
+                const product = this.state.products.find(p => p.id === productId);
+                if (!product) return;
+
+                if (quantity > product.reserveStock) {
+                    this.showToast(`Not enough reserve stock! Only ${product.reserveStock}kg available`, 'warning');
+                    return;
+                }
+
+                const updatedProducts = this.state.products.map(p =>
+                    p.id === productId ? { 
+                        ...p, 
+                        reserveStock: p.reserveStock - quantity,
+                        marketStock: p.marketStock + quantity
+                    } : p
+                );
+                this.setState({ products: updatedProducts });
+                this.showToast(`Moved ${quantity}kg to market`);
+            }
+
+            moveStockToReserve(productId, quantity) {
+                const product = this.state.products.find(p => p.id === productId);
+                if (!product) return;
+
+                if (quantity > product.marketStock) {
+                    this.showToast(`Not enough market stock! Only ${product.marketStock}kg available`, 'warning');
+                    return;
+                }
+
+                const updatedProducts = this.state.products.map(p =>
+                    p.id === productId ? { 
+                        ...p, 
+                        reserveStock: p.reserveStock + quantity,
+                        marketStock: p.marketStock - quantity
+                    } : p
+                );
+                this.setState({ products: updatedProducts });
+                this.showToast(`Moved ${quantity}kg to reserve`);
+            }
+
+            updateProductPrice(productId, field, value) {
+                const updatedProducts = this.state.products.map(p =>
+                    p.id === productId ? { ...p, [field]: parseFloat(value) || 0 } : p
+                );
+                this.setState({ products: updatedProducts });
+            }
+
+            deleteProduct(productId) {
+                const product = this.state.products.find(p => p.id === productId);
+                if (!product) return;
+
+                if (this.state.transactions.some(t => t.productId === productId)) {
+                    this.showToast('Cannot delete product with transaction history', 'warning');
+                    return;
+                }
+
+                if (!confirm(`Are you sure you want to delete ${product.name}?`)) {
+                    return;
+                }
+
+                const newProducts = this.state.products.filter(p => p.id !== productId);
+                this.setState({ products: newProducts });
+                this.showToast(`Product ${product.name} deleted`);
+            }
+
+            getFilteredTransactions() {
+                return this.state.transactions.filter(t => {
+                    const dateMatch = !this.state.filterDate || t.date === this.state.filterDate;
+                    const productMatch = !this.state.filterProduct || t.productId === parseInt(this.state.filterProduct);
+                    return dateMatch && productMatch;
+                });
+            }
+
+            getTodaysProfit() {
+                const today = new Date().toISOString().split('T')[0];
+                const todaysTransactions = this.state.transactions.filter(t => t.date === today);
+                return todaysTransactions.reduce((sum, t) => sum + t.profit, 0);
+            }
+
+            getMarketStockProjection() {
+                return this.state.products.reduce((total, product) => {
+                    return total + this.calculateProjection(product, product.marketStock);
+                }, 0);
+            }
+
+            getTotalStockProjection() {
+                return this.state.products.reduce((total, product) => {
+                    return total + this.calculateProjection(product, product.marketStock + product.reserveStock);
+                }, 0);
+            }
+
+            exportData() {
+                const backup = {
+                    exportDate: new Date().toISOString(),
+                    version: '1.0',
+                    data: this.state
+                };
+
+                const json = JSON.stringify(backup, null, 2);
+                const blob = new Blob([json], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `GDFarms_Backup_${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                this.showToast('✅ Data exported successfully!');
+            }
+
+            exportCSV() {
+                const transactions = this.getFilteredTransactions();
+                const csvContent = [
+                    ['Date', 'Product', 'Quantity (kg)', 'Order Price', 'Selling Price', 'Total Cost', 'Total Revenue', 'Profit/Loss', 'Transport To', 'Transport From'],
+                    ...transactions.map(t => [
+                        t.date,
+                        t.productName,
+                        t.quantity,
+                        t.orderPrice,
+                        t.sellingPrice,
+                        t.totalCost.toFixed(2),
+                        t.totalRevenue.toFixed(2),
+                        t.profit.toFixed(2),
+                        t.transportToMarket,
+                        t.transportFromMarket
+                    ])
+                ].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `GDFarms_Report_${new Date().toISOString().split('T')[0]}.csv`;
+                a.click();
+                this.showToast('✅ CSV exported successfully!');
+            }
+
+            importData(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const backup = JSON.parse(e.target.result);
+                        if (backup.data) {
+                            this.setState(backup.data);
+                            this.showToast('✅ Data imported successfully!');
+                        }
+                    } catch (error) {
+                        this.showToast('❌ Error importing file. Please ensure it\'s a valid GDFarms backup file.', 'error');
+                    }
+                };
+                reader.readAsText(file);
+                event.target.value = '';
+            }
+
+            clearAllData() {
+                if (!confirm('Are you sure you want to clear ALL data? This action cannot be undone.')) {
+                    return;
+                }
+
+                this.state = {
+                    transportToMarket: 0,
+                    transportFromMarket: 0,
+                    products: [
+                        { id: 1, name: 'Beans', orderPrice: 0, sellingPrice: 0, reserveStock: 0, marketStock: 0 },
+                        { id: 2, name: 'Rice', orderPrice: 0, sellingPrice: 0, reserveStock: 0, marketStock: 0 },
+                        { id: 3, name: 'Popcorn', orderPrice: 0, sellingPrice: 0, reserveStock: 0, marketStock: 0 },
+                    ],
+                    transactions: [],
+                    newProductName: '',
+                    newProductReserveStock: 0,
+                    newProductMarketStock: 0,
+                    entryDate: new Date().toISOString().split('T')[0],
+                    filterDate: '',
+                    filterProduct: '',
+                };
+                this.saveData();
+                this.render();
+                this.showToast('All data cleared successfully');
+            }
+
+            renderHome() {
+                const totalProfit = this.state.transactions.reduce((sum, t) => sum + t.profit, 0);
+                const totalSales = this.state.transactions.length;
+                const totalQuantity = this.state.transactions.reduce((sum, t) => sum + t.quantity, 0);
+                const todaysProfit = this.getTodaysProfit();
+
+                return `
+                    <div class="landing-page">
+                        <div class="landing-title">🚜 GDFarms</div>
+                        <div class="landing-subtitle">Professional Profit & Loss Tracker</div>
+                        
+                        <div class="nav-buttons">
+                            <button class="nav-btn nav-btn-primary" onclick="app.navigateTo('sell')">
+                                <div class="nav-btn-icon">💰</div>
+                                <div>Quick Sell</div>
+                            </button>
+                            <button class="nav-btn nav-btn-secondary" onclick="app.navigateTo('stock')">
+                                <div class="nav-btn-icon">📦</div>
+                                <div>Manage Stock</div>
+                            </button>
+                            <button class="nav-btn nav-btn-warning" onclick="app.navigateTo('history')">
+                                <div class="nav-btn-icon">📋</div>
+                                <div>History</div>
+                            </button>
+                            <button class="nav-btn nav-btn-danger" onclick="app.navigateTo('summary')">
+                                <div class="nav-btn-icon">📈</div>
+                                <div>Summary</div>
+                            </button>
+                            <button class="nav-btn nav-btn-secondary" onclick="app.navigateTo('backup')" style="grid-column: 1 / -1;">
+                                <div class="nav-btn-icon">💾</div>
+                                <div>Backup & Restore</div>
+                            </button>
+                        </div>
+
+                        <div style="margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 20px; width: 100%; max-width: 600px;">
+                            <div class="stat-card">
+                                <div class="stat-label">📈 Total Profit</div>
+                                <div class="stat-value" style="color: ${totalProfit >= 0 ? 'var(--success)' : 'var(--danger)'}">$${totalProfit.toFixed(2)}</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">📊 Total Sales</div>
+                                <div class="stat-value">${totalSales}</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">⚖️ Total Quantity</div>
+                                <div class="stat-value">${totalQuantity}kg</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">📅 Today's Profit</div>
+                                <div class="stat-value" style="color: ${todaysProfit >= 0 ? 'var(--success)' : 'var(--danger)'}">$${todaysProfit.toFixed(2)}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderQuickSell() {
+                const todaysProfit = this.getTodaysProfit();
+                const marketProjection = this.getMarketStockProjection();
+                const totalProjection = this.getTotalStockProjection();
+
+                return `
+                    <button class="back-btn" onclick="app.navigateTo('home')">← Back Home</button>
+                    
+                    <div class="card">
+                        <div class="card-title">⚙️ Transport Settings</div>
+                        <div class="grid-2">
+                            <div class="input-group">
+                                <label class="input-label">To Order Market ($)</label>
+                                <input type="number" value="${this.state.transportToMarket}" class="form-input" onchange="app.setState({transportToMarket: parseFloat(this.value) || 0})">
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label">From Selling Market ($)</label>
+                                <input type="number" value="${this.state.transportFromMarket}" class="form-input" onchange="app.setState({transportFromMarket: parseFloat(this.value) || 0})">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">📊 Today's Performance & Projections</div>
+                        <div class="grid-3">
+                            <div class="stat-card">
+                                <div class="stat-label">💰 Today's Profit</div>
+                                <div class="stat-value" style="color: ${todaysProfit >= 0 ? 'var(--success)' : 'var(--danger)'}">$${todaysProfit.toFixed(2)}</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">📈 Market Stock Projection</div>
+                                <div class="stat-value" style="color: ${marketProjection >= 0 ? 'var(--success)' : 'var(--danger)'}">$${marketProjection.toFixed(2)}</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">🚀 Total Stock Projection</div>
+                                <div class="stat-value" style="color: ${totalProjection >= 0 ? 'var(--success)' : 'var(--danger)'}">$${totalProjection.toFixed(2)}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">💰 Quick Sell (Bits by Bits)</div>
+                        <div class="quick-sell-grid">
+                            ${this.state.products.map(p => {
+                                const todaysSales = this.state.transactions
+                                    .filter(t => {
+                                        const today = new Date().toISOString().split('T')[0];
+                                        return t.productId === p.id && t.date === today;
+                                    })
+                                    .reduce((sum, t) => sum + t.quantity, 0);
+                                
+                                const marketProjection = this.calculateProjection(p, p.marketStock);
+                                const totalProjection = this.calculateProjection(p, p.marketStock + p.reserveStock);
+                                
+                                return `
+                                    <div class="quick-sell-card">
+                                        <div style="font-weight: 800; font-size: 15px; color: var(--dark); margin-bottom: 4px;">${p.name}</div>
+                                        <div style="font-size: 11px; color: var(--text); font-weight: 600; margin-bottom: 8px;">
+                                            Reserve: <strong style="color: var(--primary);">${p.reserveStock}kg</strong> | 
+                                            Market: <strong style="color: var(--secondary);">${p.marketStock}kg</strong>
+                                        </div>
+                                        <div style="font-size: 10px; color: var(--text); font-weight: 600; margin-bottom: 12px;">
+                                            Today: <strong style="color: var(--warning);">${todaysSales}kg</strong>
+                                        </div>
+                                        
+                                        <div class="quick-sell-buttons">
+                                            <button class="quick-btn" onclick="app.quickSell(${p.id}, 0.5)">0.5kg</button>
+                                            <button class="quick-btn" onclick="app.quickSell(${p.id}, 1)">1kg</button>
+                                            <button class="quick-btn" onclick="app.quickSell(${p.id}, 2)">2kg</button>
+                                        </div>
+                                        
+                                        <div style="display: flex; gap: 6px; margin-bottom: 10px;">
+                                            <input type="number" id="custom-qty-${p.id}" min="0" step="0.1" placeholder="Custom kg" class="form-input" style="font-size: 11px; padding: 6px; flex: 1; height: 32px;">
+                                            <button class="btn btn-primary" style="width: auto; padding: 6px 10px; font-size: 11px;" onclick="app.quickSellCustom(${p.id})">Sell</button>
+                                        </div>
+
+                                        <div class="projection-grid">
+                                            <div class="projection-card">
+                                                <div class="projection-title">📈 Market Proj.</div>
+                                                <div class="projection-value" style="color: ${marketProjection >= 0 ? 'var(--success)' : 'var(--danger)'}">$${marketProjection.toFixed(2)}</div>
+                                                <div class="projection-detail">${p.marketStock}kg @ $${p.sellingPrice}</div>
+                                            </div>
+                                            <div class="projection-card">
+                                                <div class="projection-title">🚀 Total Proj.</div>
+                                                <div class="projection-value" style="color: ${totalProjection >= 0 ? 'var(--success)' : 'var(--danger)'}">$${totalProjection.toFixed(2)}</div>
+                                                <div class="projection-detail">${p.marketStock + p.reserveStock}kg @ $${p.sellingPrice}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderStock() {
+                return `
+                    <button class="back-btn" onclick="app.navigateTo('home')">← Back Home</button>
+                    
+                    <div class="card">
+                        <div class="card-title">📦 Current Stock Levels</div>
+                        <div class="grid-3">
+                            ${this.state.products.map(p => {
+                                const totalStock = p.reserveStock + p.marketStock;
+                                return `
+                                    <div style="background: linear-gradient(135deg, #f0fdf4, #dbeafe); border-radius: 12px; padding: 14px; border: 2px solid rgba(22, 163, 74, 0.2);">
+                                        <div style="font-weight: 800; font-size: 14px; color: var(--dark); margin-bottom: 8px; display: flex; justify-content: space-between;">
+                                            <span>${p.name}</span>
+                                            <button onclick="app.deleteProduct(${p.id})" style="background: none; border: none; color: var(--danger); cursor: pointer; font-size: 12px;">🗑️</button>
+                                        </div>
+                                        
+                                        <div class="stock-distribution">
+                                            <div class="stock-card">
+                                                <div class="stock-type">Reserve</div>
+                                                <div class="stock-value">${p.reserveStock}kg</div>
+                                                <input type="number" value="${p.reserveStock}" min="0" step="0.1" class="form-input" style="font-size: 12px; padding: 6px;" onchange="app.updateStock(${p.id}, 'reserveStock', this.value)">
+                                            </div>
+                                            <div class="stock-card">
+                                                <div class="stock-type">Market</div>
+                                                <div class="stock-value">${p.marketStock}kg</div>
+                                                <input type="number" value="${p.marketStock}" min="0" step="0.1" class="form-input" style="font-size: 12px; padding: 6px;" onchange="app.updateStock(${p.id}, 'marketStock', this.value)">
+                                            </div>
+                                        </div>
+                                        
+                                        <div style="margin-top: 10px; display: flex; gap: 8px;">
+                                            <button class="btn btn-primary" style="width: auto; padding: 6px 10px; font-size: 11px; flex: 1;" onclick="app.moveStockToMarket(${p.id}, 5)">+5kg to Market</button>
+                                            <button class="btn btn-secondary" style="width: auto; padding: 6px 10px; font-size: 11px; flex: 1;" onclick="app.moveStockToReserve(${p.id}, 5)">+5kg to Reserve</button>
+                                        </div>
+                                        
+                                        <div style="margin-top: 8px; text-align: center; font-size: 11px; color: var(--text); font-weight: 600;">
+                                            Total: ${totalStock}kg
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">➕ Add New Product</div>
+                        <div class="grid-3">
+                            <div class="input-group">
+                                <label class="input-label">Product Name</label>
+                                <input type="text" value="${this.state.newProductName}" class="form-input" placeholder="e.g., Maize, Cassava" onchange="app.setState({newProductName: this.value})">
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label">Reserve Stock (kg)</label>
+                                <input type="number" value="${this.state.newProductReserveStock}" min="0" step="0.1" class="form-input" placeholder="0.00" onchange="app.setState({newProductReserveStock: parseFloat(this.value) || 0})">
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label">Market Stock (kg)</label>
+                                <input type="number" value="${this.state.newProductMarketStock}" min="0" step="0.1" class="form-input" placeholder="0.00" onchange="app.setState({newProductMarketStock: parseFloat(this.value) || 0})">
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" style="margin-top: 10px;" onclick="app.addProduct()">➕ Add Product</button>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">💰 Product Prices</div>
+                        <div class="prices-grid">
+                            ${this.state.products.map(p => `
+                                <div class="price-card">
+                                    <div style="font-weight: 800; font-size: 14px; color: var(--dark); margin-bottom: 12px;">${p.name}</div>
+                                    <div class="input-group">
+                                        <label class="input-label">Order Price ($/kg)</label>
+                                        <input type="number" value="${p.orderPrice}" min="0" step="0.01" class="form-input" onchange="app.updateProductPrice(${p.id}, 'orderPrice', this.value)">
+                                    </div>
+                                    <div class="input-group">
+                                        <label class="input-label">Selling Price ($/kg)</label>
+                                        <input type="number" value="${p.sellingPrice}" min="0" step="0.01" class="form-input" onchange="app.updateProductPrice(${p.id}, 'sellingPrice', this.value)">
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderHistory() {
+                const filteredTransactions = this.getFilteredTransactions();
+                
+                return `
+                    <button class="back-btn" onclick="app.navigateTo('home')">← Back Home</button>
+                    
+                    <div class="card">
+                        <div class="card-title">📋 Transaction History</div>
+                        
+                        <div class="grid-2">
+                            <div class="input-group">
+                                <label class="input-label">Filter by Date</label>
+                                <input type="date" value="${this.state.filterDate}" class="form-input" onchange="app.setState({filterDate: this.value})">
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label">Filter by Product</label>
+                                <select class="form-input" onchange="app.setState({filterProduct: this.value})">
+                                    <option value="">All Products</option>
+                                    ${this.state.products.map(p => `<option value="${p.id}" ${this.state.filterProduct == p.id ? 'selected' : ''}>${p.name}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Product</th>
+                                        <th>Quantity</th>
+                                        <th>Order Price</th>
+                                        <th>Selling Price</th>
+                                        <th>Total Cost</th>
+                                        <th>Total Revenue</th>
+                                        <th>Profit/Loss</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${filteredTransactions.length > 0 ? filteredTransactions.map(t => `
+                                        <tr>
+                                            <td>${t.date}</td>
+                                            <td>${t.productName}</td>
+                                            <td>${t.quantity}kg</td>
+                                            <td>$${t.orderPrice}</td>
+                                            <td>$${t.sellingPrice}</td>
+                                            <td>$${t.totalCost.toFixed(2)}</td>
+                                            <td>$${t.totalRevenue.toFixed(2)}</td>
+                                            <td style="color: ${t.profit >= 0 ? 'var(--success)' : 'var(--danger)'}; font-weight: 700;">$${t.profit.toFixed(2)}</td>
+                                            <td>
+                                                <button onclick="app.deleteTransaction(${t.id})" class="btn btn-danger" style="width: auto; padding: 6px 12px; font-size: 12px;">Delete</button>
+                                            </td>
+                                        </tr>
+                                    `).join('') : `
+                                        <tr>
+                                            <td colspan="9" style="text-align: center; padding: 40px; color: var(--text);">No transactions found</td>
+                                        </tr>
+                                    `}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderSummary() {
+                const totalProfit = this.state.transactions.reduce((sum, t) => sum + t.profit, 0);
+                const totalSales = this.state.transactions.length;
+                const totalQuantity = this.state.transactions.reduce((sum, t) => sum + t.quantity, 0);
+                const avgProfitPerSale = totalSales > 0 ? totalProfit / totalSales : 0;
+                const todaysProfit = this.getTodaysProfit();
+                const marketProjection = this.getMarketStockProjection();
+                const totalProjection = this.getTotalStockProjection();
+                
+                // Calculate product-specific stats
+                const productStats = this.state.products.map(p => {
+                    const productTransactions = this.state.transactions.filter(t => t.productId === p.id);
+                    const productProfit = productTransactions.reduce((sum, t) => sum + t.profit, 0);
+                    const productQuantity = productTransactions.reduce((sum, t) => sum + t.quantity, 0);
+                    const productSales = productTransactions.length;
+                    
+                    return {
+                        name: p.name,
+                        profit: productProfit,
+                        quantity: productQuantity,
+                        sales: productSales,
+                        avgProfit: productSales > 0 ? productProfit / productSales : 0,
+                        reserveStock: p.reserveStock,
+                        marketStock: p.marketStock,
+                        totalStock: p.reserveStock + p.marketStock
+                    };
+                });
+                
+                // Calculate monthly stats
+                const monthlyStats = {};
+                this.state.transactions.forEach(t => {
+                    const month = t.date.substring(0, 7); // YYYY-MM format
+                    if (!monthlyStats[month]) {
+                        monthlyStats[month] = { profit: 0, sales: 0, quantity: 0 };
+                    }
+                    monthlyStats[month].profit += t.profit;
+                    monthlyStats[month].sales += 1;
+                    monthlyStats[month].quantity += t.quantity;
+                });
+                
+                return `
+                    <button class="back-btn" onclick="app.navigateTo('home')">← Back Home</button>
+                    
+                    <div class="card">
+                        <div class="card-title">📈 Financial Summary</div>
+                        <div class="grid-3">
+                            <div class="stat-card">
+                                <div class="stat-label">💰 Total Profit</div>
+                                <div class="stat-value" style="color: ${totalProfit >= 0 ? 'var(--success)' : 'var(--danger)'}">$${totalProfit.toFixed(2)}</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">📊 Total Sales</div>
+                                <div class="stat-value">${totalSales}</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">⚖️ Total Quantity</div>
+                                <div class="stat-value">${totalQuantity}kg</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">📅 Today's Profit</div>
+                                <div class="stat-value" style="color: ${todaysProfit >= 0 ? 'var(--success)' : 'var(--danger)'}">$${todaysProfit.toFixed(2)}</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">📈 Market Proj.</div>
+                                <div class="stat-value" style="color: ${marketProjection >= 0 ? 'var(--success)' : 'var(--danger)'}">$${marketProjection.toFixed(2)}</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">🚀 Total Proj.</div>
+                                <div class="stat-value" style="color: ${totalProjection >= 0 ? 'var(--success)' : 'var(--danger)'}">$${totalProjection.toFixed(2)}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">📊 Product Performance</div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Total Profit</th>
+                                        <th>Total Sales</th>
+                                        <th>Total Quantity</th>
+                                        <th>Reserve Stock</th>
+                                        <th>Market Stock</th>
+                                        <th>Total Stock</th>
+                                        <th>Avg. Profit/Sale</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${productStats.map(ps => `
+                                        <tr>
+                                            <td>${ps.name}</td>
+                                            <td style="color: ${ps.profit >= 0 ? 'var(--success)' : 'var(--danger)'}">$${ps.profit.toFixed(2)}</td>
+                                            <td>${ps.sales}</td>
+                                            <td>${ps.quantity}kg</td>
+                                            <td>${ps.reserveStock}kg</td>
+                                            <td>${ps.marketStock}kg</td>
+                                            <td>${ps.totalStock}kg</td>
+                                            <td style="color: ${ps.avgProfit >= 0 ? 'var(--success)' : 'var(--danger)'}">$${ps.avgProfit.toFixed(2)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">📅 Monthly Performance</div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Month</th>
+                                        <th>Profit</th>
+                                        <th>Sales</th>
+                                        <th>Quantity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${Object.keys(monthlyStats).length > 0 ? Object.entries(monthlyStats).map(([month, stats]) => `
+                                        <tr>
+                                            <td>${month}</td>
+                                            <td style="color: ${stats.profit >= 0 ? 'var(--success)' : 'var(--danger)'}">$${stats.profit.toFixed(2)}</td>
+                                            <td>${stats.sales}</td>
+                                            <td>${stats.quantity}kg</td>
+                                        </tr>
+                                    `).join('') : `
+                                        <tr>
+                                            <td colspan="4" style="text-align: center; padding: 40px; color: var(--text);">No data available</td>
+                                        </tr>
+                                    `}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderBackup() {
+                return `
+                    <button class="back-btn" onclick="app.navigateTo('home')">← Back Home</button>
+                    
+                    <div class="card">
+                        <div class="card-title">💾 Backup & Restore</div>
+                        
+                        <div class="grid-2">
+                            <div style="display: flex; flex-direction: column; gap: 16px;">
+                                <div class="input-group">
+                                    <label class="input-label">Export Data</label>
+                                    <p style="font-size: 14px; color: var(--text); margin-bottom: 10px;">Download a backup of all your data</p>
+                                    <button class="btn btn-primary" onclick="app.exportData()">📥 Export JSON Backup</button>
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label class="input-label">Export CSV Report</label>
+                                    <p style="font-size: 14px; color: var(--text); margin-bottom: 10px;">Download transaction history as CSV</p>
+                                    <button class="btn btn-primary" onclick="app.exportCSV()">📊 Export CSV Report</button>
+                                </div>
+
+                                <div class="input-group">
+                                    <label class="input-label">Neon PostgreSQL Sync</label>
+                                    <p style="font-size: 14px; color: var(--text); margin-bottom: 10px;">Status: <span class="sync-${this.syncStatus}">${this.syncStatus.toUpperCase()}</span></p>
+                                    <div class="sync-controls">
+                                        <button class="sync-btn sync-btn-primary" onclick="app.syncToNeon()">📤 Sync to Neon</button>
+                                        <button class="sync-btn sync-btn-secondary" onclick="app.loadFromNeon()">📥 Load from Neon</button>
+                                        <button class="sync-btn btn-danger" onclick="app.clearNeonData()" style="padding: 8px 12px;">🗑️ Clear Cloud</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div style="display: flex; flex-direction: column; gap: 16px;">
+                                <div class="input-group">
+                                    <label class="input-label">Import Data</label>
+                                    <p style="font-size: 14px; color: var(--text); margin-bottom: 10px;">Restore from a previous backup</p>
+                                    <input type="file" id="importFile" accept=".json" class="form-input" onchange="app.importData(event)">
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label class="input-label">Clear All Data</label>
+                                    <p style="font-size: 14px; color: var(--text); margin-bottom: 10px;">⚠️ This will permanently delete all your data</p>
+                                    <button class="btn btn-danger" onclick="app.clearAllData()">🗑️ Clear All Data</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">📊 Data Statistics</div>
+                        <div class="grid-3">
+                            <div class="stat-card">
+                                <div class="stat-label">Products</div>
+                                <div class="stat-value">${this.state.products.length}</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Transactions</div>
+                                <div class="stat-value">${this.state.transactions.length}</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Data Size</div>
+                                <div class="stat-value">${(JSON.stringify(this.state).length / 1024).toFixed(2)}KB</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            render() {
+                const app = document.getElementById('app');
+                
+                let content = '';
+                switch (this.currentPage) {
+                    case 'home':
+                        content = this.renderHome();
+                        break;
+                    case 'sell':
+                        content = this.renderQuickSell();
+                        break;
+                    case 'stock':
+                        content = this.renderStock();
+                        break;
+                    case 'history':
+                        content = this.renderHistory();
+                        break;
+                    case 'summary':
+                        content = this.renderSummary();
+                        break;
+                    case 'backup':
+                        content = this.renderBackup();
+                        break;
+                    default:
+                        content = this.renderHome();
+                }
+                
+                app.innerHTML = `
+                    <div class="app-container">
+                        <div class="app-header">
+                            <div class="header-content">
+                                <div>
+                                    <div class="app-title">🚜 GDFarms</div>
+                                    <div class="app-subtitle">Professional Profit & Loss Tracker</div>
+                                </div>
+                                <div class="header-stats">
+                                    <div class="stat-pill">📦 ${this.state.products.length} Products</div>
+                                    <div class="stat-pill">💰 ${this.state.transactions.length} Sales</div>
+                                    <div class="sync-status sync-${this.syncStatus}">
+                                        <div class="sync-indicator">●</div>
+                                        ${this.syncStatus.toUpperCase()}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="app-content">
+                            ${content}
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Initialize the app
+        const app = new GDFarmsApp();
+
+        // Register Service Worker for PWA functionality
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    }, function(err) {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

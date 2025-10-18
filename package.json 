@@ -1,0 +1,36 @@
+{
+  "name": "gdfarms-app",
+  "version": "1.0.0",
+  "description": "Professional Farm Profit & Loss Tracker with Neon PostgreSQL",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "farm",
+    "profit",
+    "tracker",
+    "agriculture",
+    "business",
+    "inventory",
+    "postgresql",
+    "neon"
+  ],
+  "author": "GDFarms Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "pg": "^8.11.3",
+    "cors": "^2.8.5"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/gdfarms-app.git"
+  }
+}
