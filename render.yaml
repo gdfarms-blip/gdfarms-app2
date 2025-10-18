@@ -1,0 +1,7 @@
+cat > render.yaml << 'EOF'
+services:
+  - type: web
+    name: gdfarms-app
+    env: node
+    buildCommand: npm install
+    startCommand: node server.js
