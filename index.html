@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GDFarms - Pro Profit Tracker</title>
+    <title>GDFarms - Pro Profit Tracker v2.0</title>
     
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#16a34a"/>
-    <meta name="description" content="Professional farm profit and loss tracker">
+    <meta name="description" content="Professional farm profit and loss tracker with cloud sync">
     
     <style>
         * {
@@ -137,19 +137,6 @@
             width: 100%;
         }
 
-        .app-content::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .app-content::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .app-content::-webkit-scrollbar-thumb {
-            background: rgba(22, 163, 74, 0.5);
-            border-radius: 4px;
-        }
-
         /* Landing Page */
         .landing-page {
             display: flex;
@@ -202,10 +189,6 @@
             text-align: center;
         }
 
-        .nav-btn-icon {
-            font-size: 32px;
-        }
-
         .nav-btn-primary {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
@@ -223,34 +206,6 @@
             box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
         }
 
-        .nav-btn-secondary:hover {
-            box-shadow: 0 15px 40px rgba(37, 99, 235, 0.4);
-            transform: translateY(-4px);
-        }
-
-        .nav-btn-warning {
-            background: linear-gradient(135deg, var(--warning), #d97706);
-            color: white;
-            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
-        }
-
-        .nav-btn-warning:hover {
-            box-shadow: 0 15px 40px rgba(245, 158, 11, 0.4);
-            transform: translateY(-4px);
-        }
-
-        .nav-btn-danger {
-            background: linear-gradient(135deg, var(--danger), #b91c1c);
-            color: white;
-            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
-        }
-
-        .nav-btn-danger:hover {
-            box-shadow: 0 15px 40px rgba(239, 68, 68, 0.4);
-            transform: translateY(-4px);
-        }
-
-        /* Back Button */
         .back-btn {
             background: rgba(255, 255, 255, 0.1);
             border: 2px solid rgba(255, 255, 255, 0.2);
@@ -359,11 +314,6 @@
             color: white;
         }
 
-        .btn-danger:hover {
-            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
-            transform: translateY(-2px);
-        }
-
         /* Grid */
         .grid-2 {
             display: grid;
@@ -437,11 +387,6 @@
             transition: all 0.2s;
         }
 
-        .quick-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
-        }
-
         /* Table */
         .table-container {
             overflow-x: auto;
@@ -471,10 +416,6 @@
             border-bottom: 1px solid var(--border);
             color: var(--text);
             font-size: 14px;
-        }
-
-        tr:hover {
-            background: linear-gradient(90deg, rgba(22, 163, 74, 0.05), transparent);
         }
 
         /* Hide sections */
@@ -513,97 +454,6 @@
             background: var(--warning);
         }
 
-        /* Chart container */
-        .chart-container {
-            height: 300px;
-            margin-top: 20px;
-        }
-
-        /* Product Prices */
-        .prices-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-
-        .price-card {
-            background: linear-gradient(135deg, #f0fdf4, #dbeafe);
-            border-radius: 12px;
-            padding: 16px;
-            border: 2px solid rgba(22, 163, 74, 0.2);
-        }
-
-        /* Stock Distribution */
-        .stock-distribution {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-
-        .stock-card {
-            background: linear-gradient(135deg, #f0fdf4, #dbeafe);
-            border-radius: 12px;
-            padding: 16px;
-            border: 2px solid rgba(22, 163, 74, 0.2);
-            text-align: center;
-        }
-
-        .stock-type {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--dark);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .stock-value {
-            font-size: 24px;
-            font-weight: 900;
-            color: var(--primary);
-            margin-bottom: 8px;
-        }
-
-        /* Projection Cards */
-        .projection-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-top: 16px;
-        }
-
-        .projection-card {
-            background: linear-gradient(135deg, #fef3c7, #fde68a);
-            border-radius: 12px;
-            padding: 16px;
-            border: 2px solid rgba(245, 158, 11, 0.3);
-        }
-
-        .projection-title {
-            font-size: 14px;
-            font-weight: 800;
-            color: var(--dark);
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .projection-value {
-            font-size: 20px;
-            font-weight: 900;
-            color: var(--warning);
-            margin-bottom: 4px;
-        }
-
-        .projection-detail {
-            font-size: 12px;
-            color: var(--text);
-            font-weight: 600;
-        }
-
         /* Sync Controls */
         .sync-controls {
             display: flex;
@@ -631,8 +481,31 @@
             color: white;
         }
 
+        /* JSONP Status */
+        .jsonp-status {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .jsonp-status.connected {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: rgba(34, 197, 94, 0.3);
+            color: var(--success);
+        }
+
+        .jsonp-status.error {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: var(--danger);
+        }
+
         @media (max-width: 768px) {
-            .grid-2, .grid-3, .stock-distribution, .projection-grid {
+            .grid-2, .grid-3 {
                 grid-template-columns: 1fr;
             }
 
@@ -655,17 +528,20 @@
     <div id="app"></div>
 
     <script>
-        // Neon PostgreSQL Configuration
+        // Neon PostgreSQL Configuration with JSONP Support
+        const API_URL = 'https://gdfarms-app-gdjf.onrender.com';
         const NEON_CONFIG = {
-            // This will be updated to your Railway backend URL after deployment
-            endpoint: '/api/neon', // For local development
-            enabled: true
+            endpoint: `${API_URL}/api/neon`,
+            enabled: true,
+            jsonpEnabled: true
         };
 
         class NeonDB {
             constructor() {
                 this.endpoint = NEON_CONFIG.endpoint;
                 this.enabled = NEON_CONFIG.enabled;
+                this.jsonpEnabled = NEON_CONFIG.jsonpEnabled;
+                this.requestCounter = 0;
             }
 
             async query(endpoint, data = {}) {
@@ -673,6 +549,71 @@
                     throw new Error('Neon DB is not enabled');
                 }
 
+                // Use JSONP for Neocities hosting
+                if (this.jsonpEnabled) {
+                    return await this.jsonpQuery(endpoint, data);
+                } else {
+                    return await this.fetchQuery(endpoint, data);
+                }
+            }
+
+            async jsonpQuery(endpoint, data = {}) {
+                return new Promise((resolve, reject) => {
+                    this.requestCounter++;
+                    const callbackName = `gdfarms_jsonp_${this.requestCounter}_${Date.now()}`;
+                    
+                    // Create callback function
+                    window[callbackName] = (response) => {
+                        // Clean up
+                        document.head.removeChild(script);
+                        delete window[callbackName];
+                        
+                        if (response && response.success) {
+                            resolve(response);
+                        } else {
+                            reject(new Error(response?.error || 'JSONP request failed'));
+                        }
+                    };
+
+                    // Build URL with JSONP parameters
+                    const params = new URLSearchParams();
+                    params.append('callback', callbackName);
+                    params.append('userId', data.userId || '');
+                    
+                    if (data.data) {
+                        params.append('data', JSON.stringify(data.data));
+                    }
+
+                    const url = `${this.endpoint}${endpoint}?${params.toString()}`;
+                    
+                    // Create script tag
+                    const script = document.createElement('script');
+                    script.src = url;
+                    script.onerror = () => {
+                        document.head.removeChild(script);
+                        delete window[callbackName];
+                        reject(new Error('JSONP request failed - network error'));
+                    };
+                    
+                    // Add timeout
+                    const timeout = setTimeout(() => {
+                        document.head.removeChild(script);
+                        delete window[callbackName];
+                        reject(new Error('JSONP request timeout'));
+                    }, 15000);
+
+                    // Override cleanup to clear timeout
+                    const originalCleanup = window[callbackName];
+                    window[callbackName] = (response) => {
+                        clearTimeout(timeout);
+                        originalCleanup(response);
+                    };
+
+                    document.head.appendChild(script);
+                });
+            }
+
+            async fetchQuery(endpoint, data = {}) {
                 try {
                     const response = await fetch(this.endpoint + endpoint, {
                         method: 'POST',
@@ -688,7 +629,7 @@
 
                     return await response.json();
                 } catch (error) {
-                    console.error('Neon DB query failed:', error);
+                    console.error('Fetch query failed:', error);
                     throw error;
                 }
             }
@@ -703,6 +644,15 @@
 
             async deleteUserData(userId) {
                 return await this.query('/delete-user-data', { userId });
+            }
+
+            async testConnection() {
+                try {
+                    const response = await this.jsonpQuery('/jsonp-test', {});
+                    return { success: true, data: response };
+                } catch (error) {
+                    return { success: false, error: error.message };
+                }
             }
         }
 
@@ -728,6 +678,7 @@
                 
                 this.neonDB = new NeonDB();
                 this.syncStatus = 'offline';
+                this.jsonpStatus = 'disconnected';
                 this.userId = this.generateUserId();
                 
                 this.initNeon();
@@ -747,19 +698,32 @@
             async initNeon() {
                 try {
                     if (this.neonDB.enabled) {
-                        // Test connection by trying to load data
-                        await this.loadFromNeon();
-                        this.syncStatus = 'online';
-                        console.log('Neon DB connected successfully');
-                        this.showToast('🚀 Neon PostgreSQL connected - Data syncing enabled', 'success');
+                        // Test JSONP connection first
+                        this.jsonpStatus = 'testing';
+                        this.render();
+                        
+                        const testResult = await this.neonDB.testConnection();
+                        
+                        if (testResult.success) {
+                            this.syncStatus = 'online';
+                            this.jsonpStatus = 'connected';
+                            console.log('✅ Neon DB connected successfully via JSONP');
+                            this.showToast('🚀 Neon PostgreSQL connected - JSONP sync enabled', 'success');
+                        } else {
+                            this.syncStatus = 'offline';
+                            this.jsonpStatus = 'error';
+                            console.log('Neon DB available but JSONP failed, using local storage only');
+                            this.showToast('⚠️ Cloud sync unavailable - using local storage', 'warning');
+                        }
                     } else {
                         this.syncStatus = 'offline';
+                        this.jsonpStatus = 'disabled';
                         console.log('Neon DB not available, using local storage only');
                     }
                 } catch (error) {
                     console.error('Neon initialization failed:', error);
                     this.syncStatus = 'offline';
-                    this.showToast('⚠️ Neon connection failed - Using local storage', 'warning');
+                    this.jsonpStatus = 'error';
                 }
             }
 
@@ -776,7 +740,7 @@
                     await this.neonDB.saveUserData(this.userId, this.state);
 
                     this.syncStatus = 'online';
-                    this.showToast('✅ Data synced to Neon PostgreSQL', 'success');
+                    this.showToast('✅ Data synced to Neon PostgreSQL via JSONP', 'success');
                     this.render();
                 } catch (error) {
                     console.error('Neon sync failed:', error);
@@ -802,7 +766,7 @@
                         this.state = { ...this.state, ...result.data };
                         this.saveData();
                         this.syncStatus = 'online';
-                        this.showToast('✅ Data loaded from Neon PostgreSQL', 'success');
+                        this.showToast('✅ Data loaded from Neon PostgreSQL via JSONP', 'success');
                     } else {
                         this.syncStatus = 'online';
                         this.showToast('No cloud data found', 'warning');
@@ -844,6 +808,30 @@
                 }
             }
 
+            async testJSONPConnection() {
+                try {
+                    this.jsonpStatus = 'testing';
+                    this.render();
+                    
+                    const result = await this.neonDB.testConnection();
+                    
+                    if (result.success) {
+                        this.jsonpStatus = 'connected';
+                        this.syncStatus = 'online';
+                        this.showToast('✅ JSONP connection test successful!', 'success');
+                    } else {
+                        this.jsonpStatus = 'error';
+                        this.showToast('❌ JSONP connection test failed', 'error');
+                    }
+                    
+                    this.render();
+                } catch (error) {
+                    this.jsonpStatus = 'error';
+                    this.showToast('❌ JSONP test failed: ' + error.message, 'error');
+                    this.render();
+                }
+            }
+
             loadData() {
                 const saved = localStorage.getItem('gdfarms_data');
                 if (saved) {
@@ -871,16 +859,6 @@
                 this.render();
             }
 
-            calculateProfit(product, quantity, transportTo, transportFrom) {
-                const totalCost = (product.orderPrice * quantity) + transportTo;
-                const totalRevenue = (product.sellingPrice * quantity) - transportFrom;
-                return totalRevenue - totalCost;
-            }
-
-            calculateProjection(product, quantity) {
-                return this.calculateProfit(product, quantity, this.state.transportToMarket, this.state.transportFromMarket);
-            }
-
             showToast(message, type = 'success') {
                 const toast = document.createElement('div');
                 toast.className = `toast ${type}`;
@@ -900,33 +878,24 @@
             }
 
             quickSell(productId, quantity) {
-                const selectedProduct = this.state.products.find(p => p.id === productId);
-                if (!selectedProduct) return;
+                const product = this.state.products.find(p => p.id === productId);
+                if (!product) return;
 
-                if (quantity > selectedProduct.marketStock) {
-                    this.showToast(`⚠️ Insufficient market stock! You only have ${selectedProduct.marketStock}kg in market`, 'warning');
+                if (quantity > product.marketStock) {
+                    this.showToast(`Not enough stock! Only ${product.marketStock}kg available`, 'warning');
                     return;
                 }
 
-                if (selectedProduct.orderPrice <= 0 || selectedProduct.sellingPrice <= 0) {
-                    this.showToast('⚠️ Please set prices for ' + selectedProduct.name, 'warning');
-                    return;
-                }
-
-                const profit = this.calculateProfit(selectedProduct, quantity, this.state.transportToMarket, this.state.transportFromMarket);
+                const profit = (product.sellingPrice * quantity) - (product.orderPrice * quantity);
                 const transaction = {
                     id: Date.now(),
                     date: new Date().toISOString().split('T')[0],
-                    productId: selectedProduct.id,
-                    productName: selectedProduct.name,
+                    productId: product.id,
+                    productName: product.name,
                     quantity: quantity,
-                    orderPrice: selectedProduct.orderPrice,
-                    sellingPrice: selectedProduct.sellingPrice,
-                    transportToMarket: this.state.transportToMarket,
-                    transportFromMarket: this.state.transportFromMarket,
-                    totalCost: (selectedProduct.orderPrice * quantity) + this.state.transportToMarket,
-                    totalRevenue: (selectedProduct.sellingPrice * quantity) - this.state.transportFromMarket,
-                    profit,
+                    orderPrice: product.orderPrice,
+                    sellingPrice: product.sellingPrice,
+                    profit: profit,
                 };
 
                 const newTransactions = [...this.state.transactions, transaction];
@@ -938,33 +907,13 @@
                     transactions: newTransactions,
                     products: updatedProducts,
                 });
-                this.showToast(`✅ Sold ${quantity}kg of ${selectedProduct.name} - Profit: $${profit.toFixed(2)}`);
-            }
-
-            quickSellCustom(productId) {
-                const input = document.getElementById(`custom-qty-${productId}`);
-                const quantity = parseFloat(input.value);
-
-                if (!quantity || quantity <= 0) {
-                    this.showToast('Enter valid quantity', 'warning');
-                    return;
-                }
-
-                this.quickSell(productId, quantity);
-                input.value = '';
+                
+                this.showToast(`Sold ${quantity}kg of ${product.name} - Profit: $${profit.toFixed(2)}`);
             }
 
             addProduct() {
                 if (!this.state.newProductName.trim()) {
                     this.showToast('Enter product name', 'warning');
-                    return;
-                }
-
-                const reserveStock = parseFloat(this.state.newProductReserveStock) || 0;
-                const marketStock = parseFloat(this.state.newProductMarketStock) || 0;
-
-                if (reserveStock < 0 || marketStock < 0) {
-                    this.showToast('Stock values cannot be negative', 'warning');
                     return;
                 }
 
@@ -974,89 +923,18 @@
                     name: this.state.newProductName,
                     orderPrice: 0,
                     sellingPrice: 0,
-                    reserveStock: reserveStock,
-                    marketStock: marketStock
+                    reserveStock: parseFloat(this.state.newProductReserveStock) || 0,
+                    marketStock: parseFloat(this.state.newProductMarketStock) || 0
                 }];
+                
                 this.setState({ 
                     products: newProducts, 
                     newProductName: '',
                     newProductReserveStock: 0,
                     newProductMarketStock: 0
                 });
+                
                 this.showToast(`✅ ${this.state.newProductName} added!`);
-            }
-
-            deleteTransaction(id) {
-                const transaction = this.state.transactions.find(t => t.id === id);
-                if (!transaction) return;
-
-                if (!confirm(`Are you sure you want to delete this transaction?`)) {
-                    return;
-                }
-
-                const updatedProducts = this.state.products.map(p =>
-                    p.id === transaction.productId ? { ...p, marketStock: p.marketStock + transaction.quantity } : p
-                );
-
-                const newTransactions = this.state.transactions.filter(t => t.id !== id);
-                this.setState({ 
-                    transactions: newTransactions,
-                    products: updatedProducts
-                });
-                this.showToast('Transaction deleted successfully');
-            }
-
-            updateStock(productId, field, value) {
-                const stockValue = parseFloat(value) || 0;
-                if (stockValue < 0) {
-                    this.showToast('Stock cannot be negative', 'warning');
-                    return;
-                }
-
-                const updatedProducts = this.state.products.map(p =>
-                    p.id === productId ? { ...p, [field]: stockValue } : p
-                );
-                this.setState({ products: updatedProducts });
-            }
-
-            moveStockToMarket(productId, quantity) {
-                const product = this.state.products.find(p => p.id === productId);
-                if (!product) return;
-
-                if (quantity > product.reserveStock) {
-                    this.showToast(`Not enough reserve stock! Only ${product.reserveStock}kg available`, 'warning');
-                    return;
-                }
-
-                const updatedProducts = this.state.products.map(p =>
-                    p.id === productId ? { 
-                        ...p, 
-                        reserveStock: p.reserveStock - quantity,
-                        marketStock: p.marketStock + quantity
-                    } : p
-                );
-                this.setState({ products: updatedProducts });
-                this.showToast(`Moved ${quantity}kg to market`);
-            }
-
-            moveStockToReserve(productId, quantity) {
-                const product = this.state.products.find(p => p.id === productId);
-                if (!product) return;
-
-                if (quantity > product.marketStock) {
-                    this.showToast(`Not enough market stock! Only ${product.marketStock}kg available`, 'warning');
-                    return;
-                }
-
-                const updatedProducts = this.state.products.map(p =>
-                    p.id === productId ? { 
-                        ...p, 
-                        reserveStock: p.reserveStock + quantity,
-                        marketStock: p.marketStock - quantity
-                    } : p
-                );
-                this.setState({ products: updatedProducts });
-                this.showToast(`Moved ${quantity}kg to reserve`);
             }
 
             updateProductPrice(productId, field, value) {
@@ -1066,22 +944,11 @@
                 this.setState({ products: updatedProducts });
             }
 
-            deleteProduct(productId) {
-                const product = this.state.products.find(p => p.id === productId);
-                if (!product) return;
-
-                if (this.state.transactions.some(t => t.productId === productId)) {
-                    this.showToast('Cannot delete product with transaction history', 'warning');
-                    return;
-                }
-
-                if (!confirm(`Are you sure you want to delete ${product.name}?`)) {
-                    return;
-                }
-
-                const newProducts = this.state.products.filter(p => p.id !== productId);
-                this.setState({ products: newProducts });
-                this.showToast(`Product ${product.name} deleted`);
+            updateStock(productId, field, value) {
+                const updatedProducts = this.state.products.map(p =>
+                    p.id === productId ? { ...p, [field]: parseFloat(value) || 0 } : p
+                );
+                this.setState({ products: updatedProducts });
             }
 
             getFilteredTransactions() {
@@ -1098,25 +965,11 @@
                 return todaysTransactions.reduce((sum, t) => sum + t.profit, 0);
             }
 
-            getMarketStockProjection() {
-                return this.state.products.reduce((total, product) => {
-                    return total + this.calculateProjection(product, product.marketStock);
-                }, 0);
-            }
-
-            getTotalStockProjection() {
-                return this.state.products.reduce((total, product) => {
-                    return total + this.calculateProjection(product, product.marketStock + product.reserveStock);
-                }, 0);
-            }
-
             exportData() {
                 const backup = {
                     exportDate: new Date().toISOString(),
-                    version: '1.0',
                     data: this.state
                 };
-
                 const json = JSON.stringify(backup, null, 2);
                 const blob = new Blob([json], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
@@ -1125,33 +978,6 @@
                 a.download = `GDFarms_Backup_${new Date().toISOString().split('T')[0]}.json`;
                 a.click();
                 this.showToast('✅ Data exported successfully!');
-            }
-
-            exportCSV() {
-                const transactions = this.getFilteredTransactions();
-                const csvContent = [
-                    ['Date', 'Product', 'Quantity (kg)', 'Order Price', 'Selling Price', 'Total Cost', 'Total Revenue', 'Profit/Loss', 'Transport To', 'Transport From'],
-                    ...transactions.map(t => [
-                        t.date,
-                        t.productName,
-                        t.quantity,
-                        t.orderPrice,
-                        t.sellingPrice,
-                        t.totalCost.toFixed(2),
-                        t.totalRevenue.toFixed(2),
-                        t.profit.toFixed(2),
-                        t.transportToMarket,
-                        t.transportFromMarket
-                    ])
-                ].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
-
-                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `GDFarms_Report_${new Date().toISOString().split('T')[0]}.csv`;
-                a.click();
-                this.showToast('✅ CSV exported successfully!');
             }
 
             importData(event) {
@@ -1167,7 +993,7 @@
                             this.showToast('✅ Data imported successfully!');
                         }
                     } catch (error) {
-                        this.showToast('❌ Error importing file. Please ensure it\'s a valid GDFarms backup file.', 'error');
+                        this.showToast('❌ Error importing file', 'error');
                     }
                 };
                 reader.readAsText(file);
@@ -1208,28 +1034,28 @@
 
                 return `
                     <div class="landing-page">
-                        <div class="landing-title">🚜 GDFarms</div>
-                        <div class="landing-subtitle">Professional Profit & Loss Tracker</div>
+                        <div class="landing-title">🚜 GDFarms v2.0</div>
+                        <div class="landing-subtitle">Professional Profit & Loss Tracker with JSONP Cloud Sync</div>
                         
                         <div class="nav-buttons">
                             <button class="nav-btn nav-btn-primary" onclick="app.navigateTo('sell')">
-                                <div class="nav-btn-icon">💰</div>
+                                <div>💰</div>
                                 <div>Quick Sell</div>
                             </button>
-                            <button class="nav-btn nav-btn-secondary" onclick="app.navigateTo('stock')">
-                                <div class="nav-btn-icon">📦</div>
+                            <button class="nav-btn nav-btn-primary" onclick="app.navigateTo('stock')">
+                                <div>📦</div>
                                 <div>Manage Stock</div>
                             </button>
-                            <button class="nav-btn nav-btn-warning" onclick="app.navigateTo('history')">
-                                <div class="nav-btn-icon">📋</div>
+                            <button class="nav-btn nav-btn-secondary" onclick="app.navigateTo('history')">
+                                <div>📋</div>
                                 <div>History</div>
                             </button>
-                            <button class="nav-btn nav-btn-danger" onclick="app.navigateTo('summary')">
-                                <div class="nav-btn-icon">📈</div>
+                            <button class="nav-btn nav-btn-secondary" onclick="app.navigateTo('summary')">
+                                <div>📈</div>
                                 <div>Summary</div>
                             </button>
-                            <button class="nav-btn nav-btn-secondary" onclick="app.navigateTo('backup')" style="grid-column: 1 / -1;">
-                                <div class="nav-btn-icon">💾</div>
+                            <button class="nav-btn nav-btn-primary" onclick="app.navigateTo('backup')" style="grid-column: 1 / -1;">
+                                <div>💾</div>
                                 <div>Backup & Restore</div>
                             </button>
                         </div>
@@ -1257,96 +1083,26 @@
             }
 
             renderQuickSell() {
-                const todaysProfit = this.getTodaysProfit();
-                const marketProjection = this.getMarketStockProjection();
-                const totalProjection = this.getTotalStockProjection();
-
                 return `
                     <button class="back-btn" onclick="app.navigateTo('home')">← Back Home</button>
                     
                     <div class="card">
-                        <div class="card-title">⚙️ Transport Settings</div>
-                        <div class="grid-2">
-                            <div class="input-group">
-                                <label class="input-label">To Order Market ($)</label>
-                                <input type="number" value="${this.state.transportToMarket}" class="form-input" onchange="app.setState({transportToMarket: parseFloat(this.value) || 0})">
-                            </div>
-                            <div class="input-group">
-                                <label class="input-label">From Selling Market ($)</label>
-                                <input type="number" value="${this.state.transportFromMarket}" class="form-input" onchange="app.setState({transportFromMarket: parseFloat(this.value) || 0})">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-title">📊 Today's Performance & Projections</div>
-                        <div class="grid-3">
-                            <div class="stat-card">
-                                <div class="stat-label">💰 Today's Profit</div>
-                                <div class="stat-value" style="color: ${todaysProfit >= 0 ? 'var(--success)' : 'var(--danger)'}">$${todaysProfit.toFixed(2)}</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-label">📈 Market Stock Projection</div>
-                                <div class="stat-value" style="color: ${marketProjection >= 0 ? 'var(--success)' : 'var(--danger)'}">$${marketProjection.toFixed(2)}</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-label">🚀 Total Stock Projection</div>
-                                <div class="stat-value" style="color: ${totalProjection >= 0 ? 'var(--success)' : 'var(--danger)'}">$${totalProjection.toFixed(2)}</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-title">💰 Quick Sell (Bits by Bits)</div>
+                        <div class="card-title">💰 Quick Sell</div>
                         <div class="quick-sell-grid">
-                            ${this.state.products.map(p => {
-                                const todaysSales = this.state.transactions
-                                    .filter(t => {
-                                        const today = new Date().toISOString().split('T')[0];
-                                        return t.productId === p.id && t.date === today;
-                                    })
-                                    .reduce((sum, t) => sum + t.quantity, 0);
-                                
-                                const marketProjection = this.calculateProjection(p, p.marketStock);
-                                const totalProjection = this.calculateProjection(p, p.marketStock + p.reserveStock);
-                                
-                                return `
-                                    <div class="quick-sell-card">
-                                        <div style="font-weight: 800; font-size: 15px; color: var(--dark); margin-bottom: 4px;">${p.name}</div>
-                                        <div style="font-size: 11px; color: var(--text); font-weight: 600; margin-bottom: 8px;">
-                                            Reserve: <strong style="color: var(--primary);">${p.reserveStock}kg</strong> | 
-                                            Market: <strong style="color: var(--secondary);">${p.marketStock}kg</strong>
-                                        </div>
-                                        <div style="font-size: 10px; color: var(--text); font-weight: 600; margin-bottom: 12px;">
-                                            Today: <strong style="color: var(--warning);">${todaysSales}kg</strong>
-                                        </div>
-                                        
-                                        <div class="quick-sell-buttons">
-                                            <button class="quick-btn" onclick="app.quickSell(${p.id}, 0.5)">0.5kg</button>
-                                            <button class="quick-btn" onclick="app.quickSell(${p.id}, 1)">1kg</button>
-                                            <button class="quick-btn" onclick="app.quickSell(${p.id}, 2)">2kg</button>
-                                        </div>
-                                        
-                                        <div style="display: flex; gap: 6px; margin-bottom: 10px;">
-                                            <input type="number" id="custom-qty-${p.id}" min="0" step="0.1" placeholder="Custom kg" class="form-input" style="font-size: 11px; padding: 6px; flex: 1; height: 32px;">
-                                            <button class="btn btn-primary" style="width: auto; padding: 6px 10px; font-size: 11px;" onclick="app.quickSellCustom(${p.id})">Sell</button>
-                                        </div>
-
-                                        <div class="projection-grid">
-                                            <div class="projection-card">
-                                                <div class="projection-title">📈 Market Proj.</div>
-                                                <div class="projection-value" style="color: ${marketProjection >= 0 ? 'var(--success)' : 'var(--danger)'}">$${marketProjection.toFixed(2)}</div>
-                                                <div class="projection-detail">${p.marketStock}kg @ $${p.sellingPrice}</div>
-                                            </div>
-                                            <div class="projection-card">
-                                                <div class="projection-title">🚀 Total Proj.</div>
-                                                <div class="projection-value" style="color: ${totalProjection >= 0 ? 'var(--success)' : 'var(--danger)'}">$${totalProjection.toFixed(2)}</div>
-                                                <div class="projection-detail">${p.marketStock + p.reserveStock}kg @ $${p.sellingPrice}</div>
-                                            </div>
-                                        </div>
+                            ${this.state.products.map(p => `
+                                <div class="quick-sell-card">
+                                    <div style="font-weight: 800; font-size: 15px; color: var(--dark); margin-bottom: 4px;">${p.name}</div>
+                                    <div style="font-size: 11px; color: var(--text); font-weight: 600; margin-bottom: 8px;">
+                                        Market Stock: <strong style="color: var(--primary);">${p.marketStock}kg</strong>
                                     </div>
-                                `;
-                            }).join('')}
+                                    
+                                    <div class="quick-sell-buttons">
+                                        <button class="quick-btn" onclick="app.quickSell(${p.id}, 0.5)">0.5kg</button>
+                                        <button class="quick-btn" onclick="app.quickSell(${p.id}, 1)">1kg</button>
+                                        <button class="quick-btn" onclick="app.quickSell(${p.id}, 2)">2kg</button>
+                                    </div>
+                                </div>
+                            `).join('')}
                         </div>
                     </div>
                 `;
@@ -1357,41 +1113,35 @@
                     <button class="back-btn" onclick="app.navigateTo('home')">← Back Home</button>
                     
                     <div class="card">
-                        <div class="card-title">📦 Current Stock Levels</div>
+                        <div class="card-title">📦 Current Stock</div>
                         <div class="grid-3">
-                            ${this.state.products.map(p => {
-                                const totalStock = p.reserveStock + p.marketStock;
-                                return `
-                                    <div style="background: linear-gradient(135deg, #f0fdf4, #dbeafe); border-radius: 12px; padding: 14px; border: 2px solid rgba(22, 163, 74, 0.2);">
-                                        <div style="font-weight: 800; font-size: 14px; color: var(--dark); margin-bottom: 8px; display: flex; justify-content: space-between;">
-                                            <span>${p.name}</span>
-                                            <button onclick="app.deleteProduct(${p.id})" style="background: none; border: none; color: var(--danger); cursor: pointer; font-size: 12px;">🗑️</button>
+                            ${this.state.products.map(p => `
+                                <div style="background: linear-gradient(135deg, #f0fdf4, #dbeafe); border-radius: 12px; padding: 14px; border: 2px solid rgba(22, 163, 74, 0.2);">
+                                    <div style="font-weight: 800; font-size: 14px; color: var(--dark); margin-bottom: 8px;">${p.name}</div>
+                                    
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                                        <div>
+                                            <div class="input-label">Reserve Stock (kg)</div>
+                                            <input type="number" value="${p.reserveStock}" class="form-input" onchange="app.updateStock(${p.id}, 'reserveStock', this.value)">
                                         </div>
-                                        
-                                        <div class="stock-distribution">
-                                            <div class="stock-card">
-                                                <div class="stock-type">Reserve</div>
-                                                <div class="stock-value">${p.reserveStock}kg</div>
-                                                <input type="number" value="${p.reserveStock}" min="0" step="0.1" class="form-input" style="font-size: 12px; padding: 6px;" onchange="app.updateStock(${p.id}, 'reserveStock', this.value)">
-                                            </div>
-                                            <div class="stock-card">
-                                                <div class="stock-type">Market</div>
-                                                <div class="stock-value">${p.marketStock}kg</div>
-                                                <input type="number" value="${p.marketStock}" min="0" step="0.1" class="form-input" style="font-size: 12px; padding: 6px;" onchange="app.updateStock(${p.id}, 'marketStock', this.value)">
-                                            </div>
-                                        </div>
-                                        
-                                        <div style="margin-top: 10px; display: flex; gap: 8px;">
-                                            <button class="btn btn-primary" style="width: auto; padding: 6px 10px; font-size: 11px; flex: 1;" onclick="app.moveStockToMarket(${p.id}, 5)">+5kg to Market</button>
-                                            <button class="btn btn-secondary" style="width: auto; padding: 6px 10px; font-size: 11px; flex: 1;" onclick="app.moveStockToReserve(${p.id}, 5)">+5kg to Reserve</button>
-                                        </div>
-                                        
-                                        <div style="margin-top: 8px; text-align: center; font-size: 11px; color: var(--text); font-weight: 600;">
-                                            Total: ${totalStock}kg
+                                        <div>
+                                            <div class="input-label">Market Stock (kg)</div>
+                                            <input type="number" value="${p.marketStock}" class="form-input" onchange="app.updateStock(${p.id}, 'marketStock', this.value)">
                                         </div>
                                     </div>
-                                `;
-                            }).join('')}
+                                    
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                        <div>
+                                            <div class="input-label">Order Price ($)</div>
+                                            <input type="number" value="${p.orderPrice}" class="form-input" onchange="app.updateProductPrice(${p.id}, 'orderPrice', this.value)">
+                                        </div>
+                                        <div>
+                                            <div class="input-label">Selling Price ($)</div>
+                                            <input type="number" value="${p.sellingPrice}" class="form-input" onchange="app.updateProductPrice(${p.id}, 'sellingPrice', this.value)">
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
                         </div>
                     </div>
 
@@ -1404,33 +1154,14 @@
                             </div>
                             <div class="input-group">
                                 <label class="input-label">Reserve Stock (kg)</label>
-                                <input type="number" value="${this.state.newProductReserveStock}" min="0" step="0.1" class="form-input" placeholder="0.00" onchange="app.setState({newProductReserveStock: parseFloat(this.value) || 0})">
+                                <input type="number" value="${this.state.newProductReserveStock}" class="form-input" placeholder="0.00" onchange="app.setState({newProductReserveStock: parseFloat(this.value) || 0})">
                             </div>
                             <div class="input-group">
                                 <label class="input-label">Market Stock (kg)</label>
-                                <input type="number" value="${this.state.newProductMarketStock}" min="0" step="0.1" class="form-input" placeholder="0.00" onchange="app.setState({newProductMarketStock: parseFloat(this.value) || 0})">
+                                <input type="number" value="${this.state.newProductMarketStock}" class="form-input" placeholder="0.00" onchange="app.setState({newProductMarketStock: parseFloat(this.value) || 0})">
                             </div>
                         </div>
-                        <button class="btn btn-primary" style="margin-top: 10px;" onclick="app.addProduct()">➕ Add Product</button>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-title">💰 Product Prices</div>
-                        <div class="prices-grid">
-                            ${this.state.products.map(p => `
-                                <div class="price-card">
-                                    <div style="font-weight: 800; font-size: 14px; color: var(--dark); margin-bottom: 12px;">${p.name}</div>
-                                    <div class="input-group">
-                                        <label class="input-label">Order Price ($/kg)</label>
-                                        <input type="number" value="${p.orderPrice}" min="0" step="0.01" class="form-input" onchange="app.updateProductPrice(${p.id}, 'orderPrice', this.value)">
-                                    </div>
-                                    <div class="input-group">
-                                        <label class="input-label">Selling Price ($/kg)</label>
-                                        <input type="number" value="${p.sellingPrice}" min="0" step="0.01" class="form-input" onchange="app.updateProductPrice(${p.id}, 'sellingPrice', this.value)">
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
+                        <button class="btn btn-primary" onclick="app.addProduct()">➕ Add Product</button>
                     </div>
                 `;
             }
@@ -1467,10 +1198,7 @@
                                         <th>Quantity</th>
                                         <th>Order Price</th>
                                         <th>Selling Price</th>
-                                        <th>Total Cost</th>
-                                        <th>Total Revenue</th>
                                         <th>Profit/Loss</th>
-                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1481,16 +1209,11 @@
                                             <td>${t.quantity}kg</td>
                                             <td>$${t.orderPrice}</td>
                                             <td>$${t.sellingPrice}</td>
-                                            <td>$${t.totalCost.toFixed(2)}</td>
-                                            <td>$${t.totalRevenue.toFixed(2)}</td>
                                             <td style="color: ${t.profit >= 0 ? 'var(--success)' : 'var(--danger)'}; font-weight: 700;">$${t.profit.toFixed(2)}</td>
-                                            <td>
-                                                <button onclick="app.deleteTransaction(${t.id})" class="btn btn-danger" style="width: auto; padding: 6px 12px; font-size: 12px;">Delete</button>
-                                            </td>
                                         </tr>
                                     `).join('') : `
                                         <tr>
-                                            <td colspan="9" style="text-align: center; padding: 40px; color: var(--text);">No transactions found</td>
+                                            <td colspan="6" style="text-align: center; padding: 40px; color: var(--text);">No transactions found</td>
                                         </tr>
                                     `}
                                 </tbody>
@@ -1504,40 +1227,18 @@
                 const totalProfit = this.state.transactions.reduce((sum, t) => sum + t.profit, 0);
                 const totalSales = this.state.transactions.length;
                 const totalQuantity = this.state.transactions.reduce((sum, t) => sum + t.quantity, 0);
-                const avgProfitPerSale = totalSales > 0 ? totalProfit / totalSales : 0;
-                const todaysProfit = this.getTodaysProfit();
-                const marketProjection = this.getMarketStockProjection();
-                const totalProjection = this.getTotalStockProjection();
                 
-                // Calculate product-specific stats
                 const productStats = this.state.products.map(p => {
                     const productTransactions = this.state.transactions.filter(t => t.productId === p.id);
                     const productProfit = productTransactions.reduce((sum, t) => sum + t.profit, 0);
                     const productQuantity = productTransactions.reduce((sum, t) => sum + t.quantity, 0);
-                    const productSales = productTransactions.length;
                     
                     return {
                         name: p.name,
                         profit: productProfit,
                         quantity: productQuantity,
-                        sales: productSales,
-                        avgProfit: productSales > 0 ? productProfit / productSales : 0,
-                        reserveStock: p.reserveStock,
-                        marketStock: p.marketStock,
-                        totalStock: p.reserveStock + p.marketStock
+                        sales: productTransactions.length
                     };
-                });
-                
-                // Calculate monthly stats
-                const monthlyStats = {};
-                this.state.transactions.forEach(t => {
-                    const month = t.date.substring(0, 7); // YYYY-MM format
-                    if (!monthlyStats[month]) {
-                        monthlyStats[month] = { profit: 0, sales: 0, quantity: 0 };
-                    }
-                    monthlyStats[month].profit += t.profit;
-                    monthlyStats[month].sales += 1;
-                    monthlyStats[month].quantity += t.quantity;
                 });
                 
                 return `
@@ -1558,18 +1259,6 @@
                                 <div class="stat-label">⚖️ Total Quantity</div>
                                 <div class="stat-value">${totalQuantity}kg</div>
                             </div>
-                            <div class="stat-card">
-                                <div class="stat-label">📅 Today's Profit</div>
-                                <div class="stat-value" style="color: ${todaysProfit >= 0 ? 'var(--success)' : 'var(--danger)'}">$${todaysProfit.toFixed(2)}</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-label">📈 Market Proj.</div>
-                                <div class="stat-value" style="color: ${marketProjection >= 0 ? 'var(--success)' : 'var(--danger)'}">$${marketProjection.toFixed(2)}</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-label">🚀 Total Proj.</div>
-                                <div class="stat-value" style="color: ${totalProjection >= 0 ? 'var(--success)' : 'var(--danger)'}">$${totalProjection.toFixed(2)}</div>
-                            </div>
                         </div>
                     </div>
 
@@ -1583,10 +1272,6 @@
                                         <th>Total Profit</th>
                                         <th>Total Sales</th>
                                         <th>Total Quantity</th>
-                                        <th>Reserve Stock</th>
-                                        <th>Market Stock</th>
-                                        <th>Total Stock</th>
-                                        <th>Avg. Profit/Sale</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1596,42 +1281,8 @@
                                             <td style="color: ${ps.profit >= 0 ? 'var(--success)' : 'var(--danger)'}">$${ps.profit.toFixed(2)}</td>
                                             <td>${ps.sales}</td>
                                             <td>${ps.quantity}kg</td>
-                                            <td>${ps.reserveStock}kg</td>
-                                            <td>${ps.marketStock}kg</td>
-                                            <td>${ps.totalStock}kg</td>
-                                            <td style="color: ${ps.avgProfit >= 0 ? 'var(--success)' : 'var(--danger)'}">$${ps.avgProfit.toFixed(2)}</td>
                                         </tr>
                                     `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-title">📅 Monthly Performance</div>
-                        <div class="table-container">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Month</th>
-                                        <th>Profit</th>
-                                        <th>Sales</th>
-                                        <th>Quantity</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${Object.keys(monthlyStats).length > 0 ? Object.entries(monthlyStats).map(([month, stats]) => `
-                                        <tr>
-                                            <td>${month}</td>
-                                            <td style="color: ${stats.profit >= 0 ? 'var(--success)' : 'var(--danger)'}">$${stats.profit.toFixed(2)}</td>
-                                            <td>${stats.sales}</td>
-                                            <td>${stats.quantity}kg</td>
-                                        </tr>
-                                    `).join('') : `
-                                        <tr>
-                                            <td colspan="4" style="text-align: center; padding: 40px; color: var(--text);">No data available</td>
-                                        </tr>
-                                    `}
                                 </tbody>
                             </table>
                         </div>
@@ -1640,11 +1291,22 @@
             }
 
             renderBackup() {
+                const jsonpStatusText = this.jsonpStatus === 'connected' ? '✅ Connected' : 
+                                      this.jsonpStatus === 'testing' ? '🔄 Testing...' : 
+                                      this.jsonpStatus === 'error' ? '❌ Connection Failed' : '⚪ Disconnected';
+
                 return `
                     <button class="back-btn" onclick="app.navigateTo('home')">← Back Home</button>
                     
                     <div class="card">
-                        <div class="card-title">💾 Backup & Restore</div>
+                        <div class="card-title">💾 Backup & Restore v2.0</div>
+                        
+                        <div class="jsonp-status ${this.jsonpStatus === 'connected' ? 'connected' : this.jsonpStatus === 'error' ? 'error' : ''}">
+                            <div style="display: flex; justify-content: between; align-items: center;">
+                                <span>📡 JSONP Connection: ${jsonpStatusText}</span>
+                                <button class="sync-btn sync-btn-secondary" onclick="app.testJSONPConnection()" style="margin-left: auto;">Test Connection</button>
+                            </div>
+                        </div>
                         
                         <div class="grid-2">
                             <div style="display: flex; flex-direction: column; gap: 16px;">
@@ -1653,12 +1315,6 @@
                                     <p style="font-size: 14px; color: var(--text); margin-bottom: 10px;">Download a backup of all your data</p>
                                     <button class="btn btn-primary" onclick="app.exportData()">📥 Export JSON Backup</button>
                                 </div>
-                                
-                                <div class="input-group">
-                                    <label class="input-label">Export CSV Report</label>
-                                    <p style="font-size: 14px; color: var(--text); margin-bottom: 10px;">Download transaction history as CSV</p>
-                                    <button class="btn btn-primary" onclick="app.exportCSV()">📊 Export CSV Report</button>
-                                </div>
 
                                 <div class="input-group">
                                     <label class="input-label">Neon PostgreSQL Sync</label>
@@ -1666,7 +1322,7 @@
                                     <div class="sync-controls">
                                         <button class="sync-btn sync-btn-primary" onclick="app.syncToNeon()">📤 Sync to Neon</button>
                                         <button class="sync-btn sync-btn-secondary" onclick="app.loadFromNeon()">📥 Load from Neon</button>
-                                        <button class="sync-btn btn-danger" onclick="app.clearNeonData()" style="padding: 8px 12px;">🗑️ Clear Cloud</button>
+                                        <button class="sync-btn btn-danger" onclick="app.clearNeonData()">🗑️ Clear Cloud</button>
                                     </div>
                                 </div>
                             </div>
@@ -1712,26 +1368,13 @@
                 
                 let content = '';
                 switch (this.currentPage) {
-                    case 'home':
-                        content = this.renderHome();
-                        break;
-                    case 'sell':
-                        content = this.renderQuickSell();
-                        break;
-                    case 'stock':
-                        content = this.renderStock();
-                        break;
-                    case 'history':
-                        content = this.renderHistory();
-                        break;
-                    case 'summary':
-                        content = this.renderSummary();
-                        break;
-                    case 'backup':
-                        content = this.renderBackup();
-                        break;
-                    default:
-                        content = this.renderHome();
+                    case 'home': content = this.renderHome(); break;
+                    case 'sell': content = this.renderQuickSell(); break;
+                    case 'stock': content = this.renderStock(); break;
+                    case 'history': content = this.renderHistory(); break;
+                    case 'summary': content = this.renderSummary(); break;
+                    case 'backup': content = this.renderBackup(); break;
+                    default: content = this.renderHome();
                 }
                 
                 app.innerHTML = `
@@ -1739,8 +1382,8 @@
                         <div class="app-header">
                             <div class="header-content">
                                 <div>
-                                    <div class="app-title">🚜 GDFarms</div>
-                                    <div class="app-subtitle">Professional Profit & Loss Tracker</div>
+                                    <div class="app-title">🚜 GDFarms v2.0</div>
+                                    <div class="app-subtitle">Professional Profit & Loss Tracker with JSONP Cloud Sync</div>
                                 </div>
                                 <div class="header-stats">
                                     <div class="stat-pill">📦 ${this.state.products.length} Products</div>
@@ -1762,18 +1405,6 @@
 
         // Initialize the app
         const app = new GDFarmsApp();
-
-        // Register Service Worker for PWA functionality
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('./service-worker.js')
-                    .then(function(registration) {
-                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                    }, function(err) {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
-        }
     </script>
 </body>
 </html>

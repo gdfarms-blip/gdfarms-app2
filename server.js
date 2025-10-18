@@ -5,20 +5,48 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Middleware
+// Middleware - Enhanced CORS for JSONP
 app.use(cors({
     origin: [
         'http://localhost:3000',
         'http://127.0.0.1:3000',
         'http://localhost:3001',
         'https://malawiwaves.neocities.org',
-        'https://gdfarms-blip.github.io'
+        'https://gdfarms-blip.github.io',
+        'https://*.neocities.org',
+        'http://*.neocities.org',
+        '*'
     ],
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Handle preflight requests
+app.options('*', cors());
+
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// JSONP middleware - enhanced to handle various JSONP formats
+app.use((req, res, next) => {
+    // Check if this is a JSONP request
+    const callbackParam = req.query.callback || req.query.jsonp || req.query.jsoncallback;
+    if (callbackParam) {
+        req.isJSONP = true;
+        req.jsonpCallback = callbackParam;
+        
+        // Parse data from query parameters for GET requests
+        if (req.method === 'GET' && req.query.data) {
+            try {
+                req.body = JSON.parse(decodeURIComponent(req.query.data));
+            } catch (error) {
+                console.warn('Failed to parse JSONP data:', error);
+            }
+        }
+    }
+    next();
+});
 
 // Neon PostgreSQL connection with connection pooling
 const pool = new Pool({
@@ -40,48 +68,99 @@ pool.on('error', (err, client) => {
     console.error('❌ Database connection error:', err);
 });
 
-// Health check endpoint
+// Enhanced helper function to send JSONP or regular JSON response
+const sendResponse = (req, res, data, statusCode = 200) => {
+    res.status(statusCode);
+    
+    if (req.isJSONP && req.jsonpCallback) {
+        // JSONP response - wrap in callback function
+        res.set('Content-Type', 'application/javascript');
+        res.set('X-Content-Type-Options', 'nosniff');
+        
+        // Sanitize callback name for security
+        const sanitizedCallback = req.jsonpCallback.replace(/[^a-zA-Z0-9_.]/g, '');
+        const jsonpResponse = `/***/ typeof ${sanitizedCallback} === 'function' && ${sanitizedCallback}(${JSON.stringify(data)});`;
+        
+        res.send(jsonpResponse);
+    } else {
+        // Regular JSON response
+        res.json(data);
+    }
+};
+
+// Health check endpoint with JSONP support
 app.get('/health', async (req, res) => {
     try {
         const result = await pool.query('SELECT NOW()');
-        res.json({ 
+        const responseData = { 
             status: 'OK', 
             message: 'GDFarms API is running!',
             database: 'Connected',
-            timestamp: new Date().toISOString()
-        });
+            timestamp: new Date().toISOString(),
+            jsonp_support: true,
+            version: '2.0.0'
+        };
+        sendResponse(req, res, responseData);
     } catch (error) {
-        res.status(500).json({ 
+        const errorData = { 
             status: 'ERROR', 
             message: 'Database connection failed',
-            error: error.message 
-        });
+            error: error.message,
+            timestamp: new Date().toISOString()
+        };
+        sendResponse(req, res, errorData, 500);
     }
 });
 
 // API info endpoint
 app.get('/', (req, res) => {
-    res.json({
+    const responseData = {
         message: 'GDFarms API Server',
         frontend: 'https://malawiwaves.neocities.org',
-        version: '1.0.0',
+        version: '2.0.0',
         health: '/health',
-        status: 'running'
-    });
+        status: 'running',
+        jsonp_support: true,
+        endpoints: {
+            health: 'GET /health',
+            user_data: 'GET/POST /api/neon/user-data',
+            load_user_data: 'GET/POST /api/neon/load-user-data',
+            delete_user_data: 'GET/POST /api/neon/delete-user-data',
+            jsonp_test: 'GET /api/neon/jsonp-test'
+        }
+    };
+    sendResponse(req, res, responseData);
 });
 
-// Save user data
-app.post('/api/neon/user-data', async (req, res) => {
+// Enhanced parameter extraction for both GET and POST
+const extractParams = (req) => {
+    if (req.method === 'GET') {
+        return {
+            userId: req.query.userId || (req.body ? req.body.userId : null),
+            data: req.body || (req.query.data ? JSON.parse(decodeURIComponent(req.query.data)) : null)
+        };
+    } else {
+        return {
+            userId: req.body.userId,
+            data: req.body.data
+        };
+    }
+};
+
+// Save user data - enhanced JSONP support
+const handleUserData = async (req, res) => {
     try {
-        const { userId, data } = req.body;
+        const { userId, data } = extractParams(req);
         
         if (!userId) {
-            return res.status(400).json({ 
+            return sendResponse(req, res, { 
                 success: false, 
                 error: 'User ID is required' 
-            });
+            }, 400);
         }
 
+        console.log(`💾 Saving data for user: ${userId}`);
+        
         const result = await pool.query(
             `INSERT INTO user_data (user_id, data) 
              VALUES ($1, $2) 
@@ -91,69 +170,119 @@ app.post('/api/neon/user-data', async (req, res) => {
             [userId, data]
         );
         
-        res.json({ 
+        sendResponse(req, res, { 
             success: true, 
             data: result.rows[0],
-            message: 'Data saved successfully'
+            message: 'Data saved successfully',
+            userId: userId
         });
     } catch (error) {
-        console.error('Error saving user data:', error);
-        res.status(500).json({ 
+        console.error('❌ Error saving user data:', error);
+        sendResponse(req, res, { 
             success: false, 
-            error: error.message 
-        });
+            error: error.message,
+            code: 'SAVE_ERROR'
+        }, 500);
     }
-});
+};
 
-// Load user data
-app.post('/api/neon/load-user-data', async (req, res) => {
+app.post('/api/neon/user-data', handleUserData);
+app.get('/api/neon/user-data', handleUserData);
+
+// Load user data - enhanced JSONP support
+const handleLoadUserData = async (req, res) => {
     try {
-        const { userId } = req.body;
+        const { userId } = extractParams(req);
         
         if (!userId) {
-            return res.status(400).json({ 
+            return sendResponse(req, res, { 
                 success: false, 
                 error: 'User ID is required' 
-            });
+            }, 400);
         }
 
+        console.log(`📥 Loading data for user: ${userId}`);
+        
         const result = await pool.query(
-            'SELECT data FROM user_data WHERE user_id = $1',
+            'SELECT data, updated_at FROM user_data WHERE user_id = $1',
             [userId]
         );
         
         if (result.rows.length > 0) {
-            res.json({ 
+            sendResponse(req, res, { 
                 success: true, 
                 data: result.rows[0].data,
-                message: 'Data loaded successfully'
+                updatedAt: result.rows[0].updated_at,
+                message: 'Data loaded successfully',
+                userId: userId
             });
         } else {
-            res.json({ 
+            sendResponse(req, res, { 
                 success: true, 
                 data: null,
-                message: 'No data found for user'
+                message: 'No data found for user',
+                userId: userId
             });
         }
     } catch (error) {
-        console.error('Error loading user data:', error);
-        res.status(500).json({ 
+        console.error('❌ Error loading user data:', error);
+        sendResponse(req, res, { 
             success: false, 
-            error: error.message 
-        });
+            error: error.message,
+            code: 'LOAD_ERROR'
+        }, 500);
     }
-});
+};
 
-// Save individual transaction
-app.post('/api/neon/transaction', async (req, res) => {
+app.post('/api/neon/load-user-data', handleLoadUserData);
+app.get('/api/neon/load-user-data', handleLoadUserData);
+
+// Delete user data - enhanced JSONP support
+const handleDeleteUserData = async (req, res) => {
     try {
-        const { userId, transaction } = req.body;
+        const { userId } = extractParams(req);
+        
+        if (!userId) {
+            return sendResponse(req, res, { 
+                success: false, 
+                error: 'User ID is required' 
+            }, 400);
+        }
+
+        console.log(`🗑️ Deleting data for user: ${userId}`);
+        
+        await pool.query('DELETE FROM user_data WHERE user_id = $1', [userId]);
+        await pool.query('DELETE FROM transactions WHERE user_id = $1', [userId]);
+        await pool.query('DELETE FROM products WHERE user_id = $1', [userId]);
+        
+        sendResponse(req, res, { 
+            success: true, 
+            message: 'User data deleted successfully',
+            userId: userId
+        });
+    } catch (error) {
+        console.error('❌ Error deleting user data:', error);
+        sendResponse(req, res, { 
+            success: false, 
+            error: error.message,
+            code: 'DELETE_ERROR'
+        }, 500);
+    }
+};
+
+app.post('/api/neon/delete-user-data', handleDeleteUserData);
+app.get('/api/neon/delete-user-data', handleDeleteUserData);
+
+// Enhanced transaction endpoints with JSONP
+const handleTransaction = async (req, res) => {
+    try {
+        const { userId, transaction } = extractParams(req);
         
         if (!userId || !transaction) {
-            return res.status(400).json({ 
+            return sendResponse(req, res, { 
                 success: false, 
                 error: 'User ID and transaction data are required' 
-            });
+            }, 400);
         }
 
         const result = await pool.query(
@@ -178,130 +307,33 @@ app.post('/api/neon/transaction', async (req, res) => {
             ]
         );
         
-        res.json({ 
+        sendResponse(req, res, { 
             success: true, 
             data: result.rows[0],
             message: 'Transaction saved successfully'
         });
     } catch (error) {
         console.error('Error saving transaction:', error);
-        res.status(500).json({ 
+        sendResponse(req, res, { 
             success: false, 
             error: error.message 
-        });
+        }, 500);
     }
-});
+};
 
-// Load transactions with filters
-app.post('/api/neon/transactions', async (req, res) => {
+app.post('/api/neon/transaction', handleTransaction);
+app.get('/api/neon/transaction', handleTransaction);
+
+// Enhanced products endpoints with JSONP
+const handleProducts = async (req, res) => {
     try {
-        const { userId, filters = {} } = req.body;
+        const { userId } = extractParams(req);
         
         if (!userId) {
-            return res.status(400).json({ 
+            return sendResponse(req, res, { 
                 success: false, 
                 error: 'User ID is required' 
-            });
-        }
-
-        let query = 'SELECT * FROM transactions WHERE user_id = $1';
-        const params = [userId];
-        let paramCount = 1;
-        
-        if (filters.date) {
-            paramCount++;
-            query += ` AND date = $${paramCount}`;
-            params.push(filters.date);
-        }
-        
-        if (filters.productId) {
-            paramCount++;
-            query += ` AND product_id = $${paramCount}`;
-            params.push(filters.productId);
-        }
-
-        if (filters.startDate && filters.endDate) {
-            paramCount++;
-            query += ` AND date BETWEEN $${paramCount}`;
-            params.push(filters.startDate);
-            paramCount++;
-            query += ` AND $${paramCount}`;
-            params.push(filters.endDate);
-        }
-        
-        query += ' ORDER BY date DESC, created_at DESC';
-        
-        const result = await pool.query(query, params);
-        
-        res.json({ 
-            success: true, 
-            data: result.rows,
-            count: result.rows.length,
-            message: 'Transactions loaded successfully'
-        });
-    } catch (error) {
-        console.error('Error loading transactions:', error);
-        res.status(500).json({ 
-            success: false, 
-            error: error.message 
-        });
-    }
-});
-
-// Save individual product
-app.post('/api/neon/product', async (req, res) => {
-    try {
-        const { userId, product } = req.body;
-        
-        if (!userId || !product) {
-            return res.status(400).json({ 
-                success: false, 
-                error: 'User ID and product data are required' 
-            });
-        }
-
-        const result = await pool.query(
-            `INSERT INTO products (user_id, name, order_price, selling_price, reserve_stock, market_stock) 
-             VALUES ($1, $2, $3, $4, $5, $6) 
-             ON CONFLICT (user_id, name) 
-             DO UPDATE SET 
-                 order_price = $3, selling_price = $4, 
-                 reserve_stock = $5, market_stock = $6, updated_at = NOW()
-             RETURNING *`,
-            [
-                userId, 
-                product.name, 
-                product.orderPrice || 0, 
-                product.sellingPrice || 0, 
-                product.reserveStock || 0, 
-                product.marketStock || 0
-            ]
-        );
-        
-        res.json({ 
-            success: true, 
-            data: result.rows[0],
-            message: 'Product saved successfully'
-        });
-    } catch (error) {
-        console.error('Error saving product:', error);
-        res.status(500).json({ 
-            success: false, 
-            error: error.message 
-        });
-    }
-});
-
-// Load products
-app.post('/api/neon/products', async (req, res) => {
-    try {
-        const { userId } = req.body;
-        
-        if (!userId) {
-            return res.status(400).json({ 
-                success: false, 
-                error: 'User ID is required' 
-            });
+            }, 400);
         }
 
         const result = await pool.query(
@@ -309,7 +341,7 @@ app.post('/api/neon/products', async (req, res) => {
             [userId]
         );
         
-        res.json({ 
+        sendResponse(req, res, { 
             success: true, 
             data: result.rows,
             count: result.rows.length,
@@ -317,100 +349,117 @@ app.post('/api/neon/products', async (req, res) => {
         });
     } catch (error) {
         console.error('Error loading products:', error);
-        res.status(500).json({ 
+        sendResponse(req, res, { 
             success: false, 
             error: error.message 
-        });
+        }, 500);
     }
-});
+};
 
-// Delete user data
-app.post('/api/neon/delete-user-data', async (req, res) => {
-    try {
-        const { userId } = req.body;
-        
-        if (!userId) {
-            return res.status(400).json({ 
-                success: false, 
-                error: 'User ID is required' 
-            });
-        }
+app.post('/api/neon/products', handleProducts);
+app.get('/api/neon/products', handleProducts);
 
-        await pool.query('DELETE FROM user_data WHERE user_id = $1', [userId]);
-        await pool.query('DELETE FROM transactions WHERE user_id = $1', [userId]);
-        await pool.query('DELETE FROM products WHERE user_id = $1', [userId]);
-        
-        res.json({ 
-            success: true, 
-            message: 'User data deleted successfully' 
-        });
-    } catch (error) {
-        console.error('Error deleting user data:', error);
-        res.status(500).json({ 
-            success: false, 
-            error: error.message 
-        });
-    }
-});
-
-// Get database stats
+// Get database stats with JSONP support
 app.get('/api/neon/stats', async (req, res) => {
     try {
         const userDataCount = await pool.query('SELECT COUNT(*) FROM user_data');
         const transactionsCount = await pool.query('SELECT COUNT(*) FROM transactions');
         const productsCount = await pool.query('SELECT COUNT(*) FROM products');
         
-        res.json({
+        const responseData = {
             success: true,
             data: {
                 user_data: parseInt(userDataCount.rows[0].count),
                 transactions: parseInt(transactionsCount.rows[0].count),
                 products: parseInt(productsCount.rows[0].count),
-                server_time: new Date().toISOString()
+                server_time: new Date().toISOString(),
+                jsonp_requests: req.isJSONP ? 'supported' : 'not_used'
             }
-        });
+        };
+        sendResponse(req, res, responseData);
     } catch (error) {
         console.error('Error getting stats:', error);
-        res.status(500).json({ 
+        sendResponse(req, res, { 
             success: false, 
             error: error.message 
-        });
+        }, 500);
     }
 });
 
-// 404 handler
+// Enhanced JSONP test endpoint with multiple formats
+app.get('/api/neon/jsonp-test', (req, res) => {
+    const testData = {
+        success: true,
+        message: 'JSONP is working perfectly!',
+        timestamp: new Date().toISOString(),
+        method: req.method,
+        jsonp_support: true,
+        query: req.query,
+        request_type: req.isJSONP ? 'JSONP' : 'Regular JSON'
+    };
+    sendResponse(req, res, testData);
+});
+
+// JSONP demo endpoint for frontend testing
+app.get('/api/neon/jsonp-demo', (req, res) => {
+    const demoData = {
+        success: true,
+        message: '🎉 JSONP Demo Successful!',
+        data: {
+            app: 'GDFarms',
+            version: '2.0.0',
+            feature: 'Neon PostgreSQL Sync',
+            status: 'Operational',
+            jsonp: 'Enabled'
+        },
+        timestamp: new Date().toISOString()
+    };
+    sendResponse(req, res, demoData);
+});
+
+// 404 handler with JSONP support
 app.use('*', (req, res) => {
-    res.status(404).json({ 
+    const errorData = { 
         success: false, 
         error: 'Endpoint not found',
         available_endpoints: [
             'GET /',
             'GET /health',
-            'POST /api/neon/user-data',
-            'POST /api/neon/load-user-data',
-            'POST /api/neon/transaction',
-            'POST /api/neon/transactions',
-            'POST /api/neon/product',
-            'POST /api/neon/products',
-            'POST /api/neon/delete-user-data',
-            'GET /api/neon/stats'
-        ]
-    });
+            'GET/POST /api/neon/user-data',
+            'GET/POST /api/neon/load-user-data',
+            'GET/POST /api/neon/delete-user-data',
+            'GET/POST /api/neon/transaction',
+            'GET/POST /api/neon/products',
+            'GET /api/neon/stats',
+            'GET /api/neon/jsonp-test',
+            'GET /api/neon/jsonp-demo'
+        ],
+        jsonp_support: true,
+        jsonp_usage: 'Add ?callback=yourFunction to any GET endpoint'
+    };
+    sendResponse(req, res, errorData, 404);
 });
 
-// Error handling middleware
+// Enhanced error handling middleware
 app.use((error, req, res, next) => {
-    console.error('Unhandled error:', error);
-    res.status(500).json({ 
+    console.error('❌ Unhandled error:', error);
+    const errorData = { 
         success: false, 
         error: 'Internal server error',
-        message: error.message 
-    });
+        message: error.message,
+        code: 'SERVER_ERROR',
+        timestamp: new Date().toISOString()
+    };
+    sendResponse(req, res, errorData, 500);
 });
 
+// Server startup
 app.listen(port, () => {
-    console.log(`🚀 GDFarms Server running on port ${port}`);
+    console.log(`🚀 GDFarms Server v2.0.0 running on port ${port}`);
     console.log(`📊 Health check: http://localhost:${port}/health`);
     console.log(`🌐 Frontend: https://malawiwaves.neocities.org`);
     console.log(`🗄️ Database: Neon PostgreSQL connected`);
+    console.log(`📡 JSONP Support: ✅ ENABLED`);
+    console.log(`🎯 Test JSONP: https://gdfarms-app-gdjf.onrender.com/api/neon/jsonp-test?callback=test`);
+    console.log(`🎯 Demo JSONP: https://gdfarms-app-gdjf.onrender.com/api/neon/jsonp-demo?callback=demo`);
 });

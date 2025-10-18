@@ -1,7 +1,7 @@
 {
   "name": "gdfarms-app",
-  "version": "1.0.0",
-  "description": "Professional Farm Profit & Loss Tracker with Neon PostgreSQL",
+  "version": "2.0.0",
+  "description": "Professional Farm Profit & Loss Tracker with Neon PostgreSQL and JSONP Support",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -16,7 +16,9 @@
     "business",
     "inventory",
     "postgresql",
-    "neon"
+    "neon",
+    "jsonp",
+    "cors"
   ],
   "author": "GDFarms Team",
   "license": "MIT",
